@@ -1,251 +1,186 @@
-# The Anarchist's Handbook — Game Design Document v2.0
-**Genre:** Text-based PBBG (Persistent Browser-Based Game)  
-**Tone:** Gritty, ideological, underground — think zine culture meets 90s hacker BBS  
-**Layout:** Torn City-style (text-heavy, dense UI, resource bars, no game graphics)
+# The Anarchist's Handbook — Game Design Document v0.2
+**Genre:** Text-based PBBG (Persistent Browser-Based Game)
+**Tone:** Starts gritty 90s street punk → evolves into encrypted digital underground
+**Inspiration:** Torn City (UI/mechanics), the actual Anarchist's Handbook (content/theme)
 
 ---
 
-## 🎭 The Premise
+## 🔴 The Premise
 
-> *"You are [PLAYER]. Broke, angry, and all out of luck.*
-> *A true anarchist — not just in name, but in blood.*
-> *The system didn't just fail you. It was designed to.*
-> *One day, tucked inside a dumpster behind a used bookshop,*
-> *you find it: a battered, photocopied copy of The Anarchist's Handbook.*
-> *Dog-eared. Annotated. Real.*
-> *You read it cover to cover in one night.*
-> *By morning, you know what you need to do.*
-> *The materials are out there. The knowledge is in your hands.*
-> *The world is at your mercy.*
-> *What kind of mark will you leave?"*
+> *You are [name]. No job, no future, no illusions. You found the Handbook in a dumpster behind a copy shop — water-damaged, half the pages stuck together, but it was all there. You read it cover to cover in one night on a park bench.*
+>
+> *You can't un-read it.*
+>
+> *The city stretches out ahead of you. The corporations own the buildings. The State owns the cops. The surveillance grid owns the streets. And you — you've got the Handbook and enough anger to do something about it.*
+>
+> *Where do you start?*
+
+This is not a game about robbing civilians. The targets are **The Machine** — corporations, government infrastructure, police surveillance networks. The Handbook is your guide. The city is your classroom. The question is how far you're willing to go.
 
 ---
 
-## ⚙️ Core Tone Pillars
-1. **The Handbook is sacred** — Every activity, every unlock is tied to a chapter of the book
-2. **The System is the enemy** — Government, corporations, and authority are your targets
-3. **You are not a criminal for profit** — You are an agent of chaos with a worldview
-4. **Ideology shapes your path** — Different ideological stances unlock different content
-5. **Consequences are real** — Heat, surveillance, infiltration — the state fights back
+## ⚙️ Core Resources
+
+| Resource | Max | Regen | Purpose |
+|----------|-----|-------|---------|
+| **Stamina** | 150 | +5 / 30 min | Operations, training |
+| **Nerve** | 50 | +1 / 5 min | High-risk operations |
+| **Health** | 100 | +5 / 30 min | Confrontations, injuries |
+| **Influence** | unlimited | Earned | Primary progression — your reach in the underground |
+| **Heat** | 0-100 | Accumulates | Surveillance level — affects op difficulty, triggers raids |
+| **Scrip** | unlimited | Earned | Underground cash — gear, safe houses, bribes |
+
+### Heat System
+Heat accumulates with every operation. At thresholds:
+- **0-20:** Low profile. Operations run normally.
+- **21-40:** Persons of interest. Success rates slightly reduced.
+- **41-60:** Active surveillance. Harder operations, occasional Raid events.
+- **61-80:** Priority target. Frequent raids, reduced recruitment.
+- **81-100:** Full manhunt. Only safe houses protect you.
+
+Heat decays naturally over time. Faster via: laying low, counter-surveillance ops, changing safe houses.
 
 ---
 
-## 🌡️ Core Resources
+## 📊 Player Stats
 
-| Resource | Flavor Name | Max | Regen | Purpose |
-|----------|-------------|-----|-------|---------|
-| **Energy** | Resolve | 150 | +5 / 30 min | Training, Prep Work |
-| **Nerve** | Nerve | 50 | +1 / 5 min | Direct Actions |
-| **HP** | Condition | 100 | +5 / 30 min | Street confrontations |
-| **Heat** | Heat Level | 0-100 | Decays -1 / hr | Risk multiplier |
-
-> Heat is a **fourth resource** — it accumulates with every action and decays slowly.
-> High heat = police crackdowns, informants in your cell, failed operations.
-> It never fully resets without deliberate counter-measures.
-
----
-
-## 📊 Stats
-
-| Stat | Abbr | Role |
-|------|------|------|
-| **Resolve** | RES | Resist interrogation, stay committed under pressure |
-| **Agility** | AGI | Escape, movement, physical confrontations |
-| **Stealth** | STH | Surveillance evasion, covert operations |
-| **Intellect** | INT | Hacking, chemistry, planning complex operations |
-| **Charisma** | CHA | Recruitment, propaganda effectiveness, negotiation |
-| **Notoriety** | — | Your reputation in the underground. Unlocks contacts and content |
+| Stat | Governs |
+|------|---------|
+| **Body** | Physical operations, confrontations, endurance |
+| **Reflexes** | Escape chance, evading pursuit, travel ops |
+| **Ghost** | Surveillance evasion, counter-heat, stealth ops |
+| **Tech** | Hacking, device construction, digital operations |
+| **Voice** | Recruiting, propaganda reach, cell leadership |
 
 ---
 
 ## 📖 The Handbook — Chapter System
 
-The game is structured around **Handbook Chapters**. Each chapter unlocks a category of activities.
-You start with Chapter 1 visible. New chapters unlock as Notoriety grows.
+The Handbook is a literal in-game item. Each chapter unlocks an operation tier, gated by Influence thresholds — not just level grind.
 
-### Chapter 1 — The Basics (Starter, always available)
-> "Before you can change the world, you have to understand it."
+### Chapter 1: The Street (always available)
+*"Before anything else, you learn to see the city differently."*
+- Wheatpaste a wall | Nerve 1 | Ghost
+- Print & distribute leaflets | Nerve 2 | Voice
+- Map a surveillance route | Nerve 1 | Ghost
+- Dumpster dive (corp bins) | Nerve 1 | free
+- Pick a lock (practice run) | Nerve 2 | Reflexes
+- Tag a police vehicle | Nerve 3 | Ghost
 
-- **Leafleting** — Spread propaganda. Nerve 1. Low heat. Builds Notoriety + Charisma XP.
-- **Dumpster Diving** — Scavenge materials and components. Free action, no nerve.
-- **Graffiti** — Tag walls with slogans. Nerve 1. Notoriety + Stealth XP.
-- **Street Meeting** — Recruit a sympathizer. Nerve 2, Charisma check. Adds to your Cell.
-- **Surveillance Run** — Scout a target location. Nerve 2. Prereq for bigger ops.
+### Chapter 2: Direct Action (500 Influence)
+*"Property enforces power. Disrupting it disrupts power."*
+- Sabotage a corp vehicle | Nerve 8 | Body
+- Destroy a surveillance camera | Nerve 7 | Ghost
+- Banner drop (corp HQ) | Nerve 10 | Voice
+- Break into corp records room | Nerve 12 | Ghost
+- Disrupt a corporate event | Nerve 14 | Voice
+- Arson (infrastructure target) | Nerve 18 | Body
 
-### Chapter 2 — Infiltration (Unlocks at Notoriety 25)
-> "The enemy's systems are open books if you know how to read them."
+### Chapter 3: Information Warfare (2,000 Influence)
+*"The most powerful weapon is the one they can't confiscate."*
+- Pirate radio broadcast | Nerve 10 | Tech
+- Underground newsletter print run | Nerve 8 | Voice
+- Leak stolen documents | Nerve 12 | Tech
+- Intercept police comms | Nerve 14 | Tech
+- Counter-disinfo campaign | Nerve 10 | Voice
+- Hack & deface corp website | Nerve 16 | Tech
 
-- **Lock Bypass** — Break into a location. Nerve 6. Stealth check. Requires lockpick tool.
-- **Document Forgery** — Fake IDs, permits, press passes. INT check. Reduces heat.
-- **Tail & Surveil** — Shadow a target. AGI + STH check. Generates intel.
-- **Dumpster Intelligence** — Raid office trash for documents/keys. Low nerve, moderate reward.
-- **Burner Network** — Set up anonymous comms. INT check. Passive: reduces heat decay timer.
+### Chapter 4: The Network (5,000 Influence)
+*"Alone you're a nuisance. A network is something they have to take seriously."*
+- Establish a safe house | Nerve 15 | Ghost
+- Recruit a sympathiser | Nerve 12 | Voice
+- Set up encrypted comms | Nerve 14 | Tech
+- Courier a sensitive package | Nerve 16 | Reflexes
+- Infiltrate a target organisation | Nerve 20 | Ghost
+- Build a support network | Nerve 18 | Voice
 
-### Chapter 3 — Sabotage (Unlocks at Notoriety 75)
-> "Infrastructure is the skeleton of control. Break a bone."
+### Chapter 5: Technical Operations (15,000 Influence)
+*"The Handbook's later chapters. You understand now what they're for."*
+- Breach a corporate network | Nerve 20 | Tech
+- Hack police database | Nerve 22 | Tech
+- Disrupt surveillance grid (zone) | Nerve 24 | Tech
+- Improvised device (abstracted) | Nerve 30 | Tech+Body
+- Infrastructure disruption | Nerve 35 | Tech
+- Ghost mode (full counter-surveillance) | Nerve 18 | Ghost
 
-- **Billboard Liberation** — Culturejam a corporate billboard. High Notoriety, low risk.
-- **Vehicle Disabling** — Disable cop cars or corporate fleet. Nerve 10. AGI check.
-- **Power Disruption** — Cut power to a facility. Nerve 12. INT + STH check.
-- **Supply Interference** — Disrupt a delivery chain. Nerve 10. CHA + INT.
-- **Communications Jamming** — Block radio/comms in an area. Nerve 14. Major heat.
-
-### Chapter 4 — Chemical Knowledge (Unlocks at Notoriety 150 + INT 15)
-> "Chemistry is just physics you can smell."
-
-- **Smoke Device** — Craft a smoke canister. Requires components. Used in other ops.
-- **Irritant Mixture** — Crowd dispersal compound. Crafted item. Used in Street Battle ops.
-- **Tracer Compound** — Mark vehicles/packages to track targets. INT check.
-- **Incendiary (Small)** — Targeted fire-starting device. Nerve 20. High heat.
-- **Lab Setup** — Build an underground chem lab. Passive: unlocks crafting recipes.
-
-### Chapter 5 — Electronic Warfare (Unlocks at Notoriety 150 + INT 20)
-> "Every system has a backdoor. Find it."
-
-- **Phone Phreaking** — Exploit telecom systems. INT check. Cash + info.
-- **System Intrusion** — Hack a corporate/government server. Nerve 18. Big payout.
-- **Database Dump** — Extract sensitive records. Nerve 20. Blackmail/expose targets.
-- **Signal Hijack** — Override a broadcast. Nerve 22. Maximum notoriety.
-- **Ghost Protocol** — Fully erase your digital footprint. Reduces heat significantly.
-
-### Chapter 6 — Direct Action (Unlocks at Notoriety 300)
-> "There is a time for words. That time has passed."
-
-- **Protest Organization** — Lead a protest. Requires Cell members. High notoriety.
-- **Riot Instigation** — Escalate a protest to confrontation. Nerve 30. Mass heat + notoriety.
-- **Facility Occupation** — Seize and hold a building. Cell operation. Territory gain.
-- **Infrastructure Strike** — Major sabotage of key infrastructure. Nerve 40.
-- **The Manifesto** — Publish your ideology. Unlocks unique ending path.
+### Chapter 6: The Uprising (50,000 Influence — Endgame)
+- Mass Mobilization — spend Influence to trigger city-wide event
+- The General Strike — Cell op, requires 20+ members
+- System Collapse — Multi-cell op, raid on The Machine
+- Legacy — Retire, leave permanent mark on game world
 
 ---
 
-## 🌡️ The Heat System
+## 🧑‍🤝‍🧑 Dual Progression Paths (fork at Ch.3)
 
-Heat is a hidden war between you and the state.
+### Path A: The Operative (Solo)
+Focus: Ghost, Tech, Reflexes
+- Higher solo op success rates
+- Ghost Mode: invisible to other players
+- Unique ops: infiltration, deep cover, solo infrastructure hits
+- Endgame: the ghost the system can never catch
 
-| Heat Level | Status | Effects |
-|-----------|--------|---------|
-| 0-20 | Ghost | Full success rates. Clean slate. |
-| 21-40 | Noticed | -5% success rate. Occasional tail. |
-| 41-60 | Watched | -15% success. Informant risk in Cell. |
-| 61-80 | Hunted | -25% success. Some ops locked. Undercover encounters. |
-| 81-100 | Priority Target | -40% success. Raid risk. Cell exposed. |
+### Path B: The Organiser (Movement Builder)
+Focus: Voice, Influence, Cell mechanics
+- Cell size cap doubled (100 vs 50)
+- Unique ops: mass recruitment, propaganda campaigns, general strikes
+- Passive Influence income from network
+- Endgame: lead a movement, trigger Uprising events
 
-**Heat Reduction Methods:**
-- Lay Low (costs 24hr of no actions, -10 heat)
-- Burner Network (passive decay boost)
-- Ghost Protocol (Chapter 5, -30 heat)
-- Move safe house (costs Scrip + Nerve)
-- Use a Clean Identity (consumable item)
+---
+
+## 🏘️ The City — Zones
+
+| Zone | Vibe | Bonus | Heat Modifier |
+|------|------|-------|---------------|
+| **The Estate** | Council blocks, broken lifts. Where you started. | Starter ops | None |
+| **Corporate Park** | Glass towers, private security, CCTV. | Info war, heists | +20% Heat |
+| **The Old Town** | Indie shops, artists, sympathisers. | Recruiting, network | -10% Heat |
+| **The Docks** | Containers full of things. No questions. | Smuggling, materials | None |
+| **Government Quarter** | Camera on every corner. Massive stakes. | Ch.5+ ops | +40% Heat |
+| **The Underground** | Black market, safe houses, fences. | Trading, bribes | Passive Heat decay |
 
 ---
 
 ## 💰 Economy
 
-**Currency: Scrip** — Underground, untraceable. Not dollars.
-
-Sources: Document forgery, hacking, blackmail, cell fundraising, market trades.
-Expenses: Components, safe house rent, bail, bribes, equipment.
-
-No legitimate economy. No banks. You are outside the system.
-
----
-
-## 🔧 Crafting (Components System)
-
-Many high-tier actions require Components — scavenged or purchased materials.
-
-| Component | Source | Used In |
-|-----------|--------|---------|
-| Wire | Dumpster / market | Electronics, devices |
-| Chemicals | Underground market | Lab recipes |
-| Paper stock | Dumpster / market | Leaflets, forgeries |
-| Electronics | Scavenge / market | Hacking tools |
-| Containers | Dumpster | Lab items |
-| Fuel | Scavenge | Incendiary recipes |
-
----
-
-## 🏠 The Safe House
-
-Your base of operations. Upgradable.
-
-| Level | Cost | Unlocks |
-|-------|------|---------|
-| 1 — Squat | Free | Basic storage, rest |
-| 2 — Rented Room | 500 Scrip | Crafting bench, hidden stash |
-| 3 — Underground Flat | 2000 Scrip | Lab setup possible, cell meetings |
-| 4 — Network Node | 8000 Scrip | Digital infrastructure, reduced heat decay |
-
----
-
-## ⚖️ Ideology System
-
-At start, player chooses their ideological stance.
-
-| Ideology | Flavor | Unique Unlock |
-|----------|--------|---------------|
-| **Black Bloc** | Pure direct action, confrontational | Street Battle + Riot bonuses |
-| **Hacktivist** | Digital warfare, information liberation | Electronic Warfare bonuses |
-| **Eco-Anarchist** | Anti-corporate, environmental | Infrastructure sabotage bonuses |
-| **Insurrectionist** | Radical, destabilize everything | Chapter 6 unlocks faster |
-| **Syndicalist** | Labor organizing, collective action | Cell bonuses, recruitment |
-
----
-
-## 🏘️ Cells (Factions)
-
-Underground cells. Same Torn-style faction structure but ideologically framed.
-
-- Max 30 members
-- Cell operations: coordinated direct actions for big rewards
-- Cell territory: safe houses, printing presses, stash spots
-- Cell war: rival groups (fascists, corporate security, rival factions)
-- Ranks: Sympathizer > Comrade > Operative > Organizer > Cell Lead
-
----
-
-## ⚔️ Antagonists
-
-- **Local Police** — Low-level heat response. Surveillance, arrests.
-- **Federal Agencies** — Triggered at high Heat. Undercovers, stings.
-- **Corporate Security** — Triggered by targeting corp assets. Private contractors.
-- **Fascist Groups** — Rival street factions. PvP encounters.
-- **Informants** — Can appear inside your Cell at high heat. Must be identified.
+- **Scrip** — Underground cash. Earned from ops, selling documents/materials.
+- **Influence** — Your reach. Cannot be bought. Cannot be traded. Only built.
+- **Materials** — Looted resources (batteries, cables, paint, paper) for crafting/funding ops.
+- **Documents** — Intel stolen from corps/state. Sell or leak.
+- **Black Market** — Player-to-player trading.
 
 ---
 
 ## 📅 Roadmap
 
-### v0.1 — Foundation (current)
-- [x] Auth system
-- [x] Resource system (Energy/Nerve/HP)
-- [x] Chapter 1 actions (Handbook-themed)
-- [x] Training/gym system
-- [x] Jail system
-- [x] Torn-style UI
+### v0.1 ✅ Foundation
+- Auth, basic stats, tier 1-2 crimes, gym, jail
 
-### v0.2 — Heat & Ideology
-- [ ] Heat system (4th resource, decay, effects on success rate)
-- [ ] Ideology selection at character creation
-- [ ] Chapter 2 unlock (Infiltration)
-- [ ] Components + basic crafting
-- [ ] Safe house system
+### v0.2 — The Reframe (current)
+- [x] New GDD
+- [ ] Stats → Body/Reflexes/Ghost/Tech/Voice
+- [ ] Ops → Handbook chapter system (Ch.1-2 live)
+- [ ] Influence + Heat as core resources
+- [ ] Intro narrative on first login
+- [ ] Full UI copy rewrite (no more generic crime language)
 
-### v0.3 — Cells & Social
-- [ ] Cell creation/joining
-- [ ] Chapter 3 unlock (Sabotage)
-- [ ] Informant mechanic
-- [ ] Cell operations (group actions)
+### v0.3 — Economy
+- [ ] Materials + Documents inventory
+- [ ] Black Market player trading
+- [ ] Underground gear shops
 
-### v0.4 — Deep Systems
-- [ ] Chapter 4 & 5 (Chemical/Electronic)
-- [ ] Full crafting system
-- [ ] Blackmail/leverage system
-- [ ] Antagonist encounters
+### v0.4 — Cells & Paths
+- [ ] Cell system
+- [ ] Operative vs Organiser path fork
+- [ ] Recruiting ops
+- [ ] Zone control
 
-### v0.5 — Endgame
-- [ ] Chapter 6 (Direct Action)
-- [ ] The Manifesto ending paths
-- [ ] Cell wars / territory control
-- [ ] Ideology endgame divergence
+### v0.5 — Digital Arc
+- [ ] Full Ch.4-5 tech ops
+- [ ] Heat system raids
+- [ ] Encrypted comms
+
+### v0.6 — The Uprising
+- [ ] Ch.6 mass events
+- [ ] Legacy mechanic

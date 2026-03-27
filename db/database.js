@@ -22,47 +22,50 @@ function initSchema() {
       password_hash TEXT NOT NULL,
       email TEXT UNIQUE,
 
-      -- Currency (underground scrip)
-      cash INTEGER DEFAULT 500,
+      -- Currency
+      scrip INTEGER DEFAULT 500,
       bank INTEGER DEFAULT 0,
 
-      -- Core resources
-      energy INTEGER DEFAULT 150,
-      energy_max INTEGER DEFAULT 150,
+      -- Resources
+      stamina INTEGER DEFAULT 150,
+      stamina_max INTEGER DEFAULT 150,
       nerve INTEGER DEFAULT 50,
       nerve_max INTEGER DEFAULT 50,
-      hp INTEGER DEFAULT 100,
-      hp_max INTEGER DEFAULT 100,
+      health INTEGER DEFAULT 100,
+      health_max INTEGER DEFAULT 100,
 
-      -- Heat (4th resource — accumulates, decays)
+      -- New core resources
+      influence INTEGER DEFAULT 0,
       heat INTEGER DEFAULT 0,
-      last_heat_decay INTEGER DEFAULT (strftime('%s','now')),
 
-      -- Stats
-      strength INTEGER DEFAULT 1,
-      agility INTEGER DEFAULT 1,
-      stealth INTEGER DEFAULT 1,
-      intellect INTEGER DEFAULT 1,
-      charisma INTEGER DEFAULT 1,
-      resolve INTEGER DEFAULT 1,
-      notoriety INTEGER DEFAULT 0,
+      -- Stats (renamed from v0.1)
+      body INTEGER DEFAULT 1,
+      reflexes INTEGER DEFAULT 1,
+      ghost INTEGER DEFAULT 1,
+      tech INTEGER DEFAULT 1,
+      voice INTEGER DEFAULT 1,
 
       -- Progression
       level INTEGER DEFAULT 1,
       xp INTEGER DEFAULT 0,
-      ideology TEXT DEFAULT NULL,
+      chapter_unlocked INTEGER DEFAULT 1,
 
-      -- Status timers
+      -- Path choice (null = undecided, 'operative' or 'organiser')
+      path TEXT DEFAULT NULL,
+
+      -- Status
       jail_until INTEGER DEFAULT 0,
       hospital_until INTEGER DEFAULT 0,
 
       -- Regen timestamps
-      last_energy_regen INTEGER DEFAULT (strftime('%s','now')),
+      last_stamina_regen INTEGER DEFAULT (strftime('%s','now')),
       last_nerve_regen INTEGER DEFAULT (strftime('%s','now')),
-      last_hp_regen INTEGER DEFAULT (strftime('%s','now')),
+      last_health_regen INTEGER DEFAULT (strftime('%s','now')),
+      last_heat_decay INTEGER DEFAULT (strftime('%s','now')),
 
       -- Social
       cell_id INTEGER,
+      first_login INTEGER DEFAULT 0,
 
       -- Meta
       created_at INTEGER DEFAULT (strftime('%s','now')),
@@ -77,27 +80,30 @@ function initSchema() {
       name TEXT UNIQUE NOT NULL,
       tag TEXT UNIQUE NOT NULL,
       description TEXT,
-      ideology TEXT,
       leader_id INTEGER NOT NULL,
       bank INTEGER DEFAULT 0,
-      members INTEGER DEFAULT 1,
+      influence INTEGER DEFAULT 0,
+      zone TEXT DEFAULT 'estate',
+      member_count INTEGER DEFAULT 1,
+      path TEXT DEFAULT NULL,
       created_at INTEGER DEFAULT (strftime('%s','now'))
     );
 
-    CREATE TABLE IF NOT EXISTS actions_log (
+    CREATE TABLE IF NOT EXISTS operations (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       player_id INTEGER NOT NULL,
-      action_key TEXT NOT NULL,
+      op_key TEXT NOT NULL,
       outcome TEXT NOT NULL,
-      cash_change INTEGER DEFAULT 0,
-      xp_gained INTEGER DEFAULT 0,
+      scrip_change INTEGER DEFAULT 0,
+      influence_gain INTEGER DEFAULT 0,
       heat_change INTEGER DEFAULT 0,
+      xp_gained INTEGER DEFAULT 0,
       jail_time INTEGER DEFAULT 0,
       timestamp INTEGER DEFAULT (strftime('%s','now')),
       FOREIGN KEY (player_id) REFERENCES players(id)
     );
 
-    CREATE TABLE IF NOT EXISTS items (
+    CREATE TABLE IF NOT EXISTS inventory (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       player_id INTEGER NOT NULL,
       item_key TEXT NOT NULL,

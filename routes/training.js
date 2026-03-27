@@ -7,13 +7,18 @@ const router = express.Router();
 router.get('/', (req, res) => {
   if (!req.session.playerId) return res.json({ error: 'Not logged in.' });
   const player = getPlayer(req.session.playerId);
+
   const exercises = Object.entries(TRAINING).map(([key, ex]) => ({
-    key, name: ex.name, description: ex.description, flavor: ex.flavor,
-    stat: ex.stat, energyCost: ex.energyCost,
-    canAfford: player.energy >= ex.energyCost,
-    currentStat: player[ex.stat] || 1,
+    key,
+    name: ex.name,
+    stat: ex.stat,
+    staminaCost: ex.staminaCost,
+    desc: ex.desc,
+    canAfford: player.stamina >= ex.staminaCost,
+    currentStat: player[ex.stat],
   }));
-  res.json({ exercises, energy: player.energy, energy_max: player.energy_max });
+
+  res.json({ exercises, stamina: player.stamina, stamina_max: player.stamina_max });
 });
 
 router.post('/train', (req, res) => {
@@ -25,32 +30,45 @@ router.post('/train', (req, res) => {
   const db = getDb();
   const player = getPlayer(req.session.playerId);
 
-  if (player.energy < exercise.energyCost)
-    return res.json({ error: `Need ${exercise.energyCost} Resolve. You have ${player.energy}.` });
+  if (player.stamina < exercise.staminaCost)
+    return res.json({ error: `Need ${exercise.staminaCost} stamina. You have ${player.stamina}.` });
 
-  const currentStat = player[exercise.stat] || 1;
-  const statGainChance = Math.max(0.15, 1 - currentStat * 0.02);
+  const currentStat = player[exercise.stat];
+  // Diminishing returns: higher stat = lower chance of gain per session
+  const statGainChance = Math.max(0.10, 1 - currentStat * 0.02);
   const statGain = Math.random() < statGainChance ? 1 : 0;
   const xpGain = exercise.xpBase + Math.floor(Math.random() * exercise.xpBase * 0.5);
+
   const newXp = player.xp + xpGain;
   const newLevel = calcLevel(newXp);
 
   db.prepare(`
-    UPDATE players SET energy = energy - ?, ${exercise.stat} = ${exercise.stat} + ?, xp = ?, level = ?, last_action = strftime('%s','now') WHERE id = ?
-  `).run(exercise.energyCost, statGain, newXp, newLevel, player.id);
+    UPDATE players SET
+      stamina = stamina - ?,
+      ${exercise.stat} = ${exercise.stat} + ?,
+      xp = ?,
+      level = ?,
+      last_action = strftime('%s','now')
+    WHERE id = ?
+  `).run(exercise.staminaCost, statGain, newXp, newLevel, player.id);
 
   db.prepare(`INSERT INTO activity_log (player_id, action, detail) VALUES (?, ?, ?)`)
-    .run(player.id, `Training: ${exercise.name}`,
+    .run(player.id,
+      `Training: ${exercise.name}`,
       statGain > 0
         ? `${exercise.stat.toUpperCase()} → ${currentStat + 1}`
-        : `No stat gain. XP +${xpGain}.`);
+        : `No stat gain this session. XP +${xpGain}.`
+    );
 
   res.json({
-    statGain, stat: exercise.stat,
-    newStatValue: currentStat + statGain, xpGain,
+    statGain,
+    stat: exercise.stat,
+    newStatValue: currentStat + statGain,
+    xpGain,
+    staminaUsed: exercise.staminaCost,
     message: statGain > 0
-      ? `${exercise.flavor} — ${exercise.stat.toUpperCase()} is now ${currentStat + 1}.`
-      : `${exercise.flavor} — No improvement yet. (+${xpGain} XP)`,
+      ? `Progress. ${exercise.stat.toUpperCase()} is now ${currentStat + 1}.`
+      : `No improvement this session. The gains aren't always visible. (+${xpGain} XP)`,
   });
 });
 

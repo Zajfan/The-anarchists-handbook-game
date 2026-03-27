@@ -5,225 +5,460 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Anarchist's Handbook</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #070707;
-      --bg2: #0d0d0d;
-      --bg3: #131313;
-      --border: #1d1d1d;
-      --red: #bf2222;
-      --red2: #e03333;
-      --amber: #d4891a;
-      --green: #1e9e52;
-      --dim: #444;
-      --text: #aaa;
+      --bg:       #060606;
+      --bg2:      #0c0c0c;
+      --bg3:      #131313;
+      --border:   #1c1c1c;
+      --border2:  #252525;
+      --red:      #c0392b;
+      --red2:     #e74c3c;
+      --amber:    #d4882a;
+      --green:    #27ae60;
+      --text:     #aaaaaa;
       --text-dim: #555;
-      --mono: 'Share Tech Mono', monospace;
-      --head: 'Barlow Condensed', sans-serif;
+      --text-hi:  #e0e0e0;
+      --mono:     'Share Tech Mono', monospace;
+      --display:  'Bebas Neue', sans-serif;
+      --serif:    'Source Serif 4', serif;
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       background: var(--bg);
       color: var(--text);
       font-family: var(--mono);
       min-height: 100vh;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 420px 1fr;
+      grid-template-rows: 1fr;
       align-items: center;
-      justify-content: center;
       position: relative;
       overflow: hidden;
     }
-    /* Scanlines */
+
+    /* Faint scanlines */
     body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+      );
       pointer-events: none;
-    }
-    /* Big background A */
-    .bg-anarchy {
-      position: fixed;
-      font-size: 600px;
-      line-height: 1;
-      color: rgba(191,34,34,0.03);
-      font-family: var(--head);
-      font-weight: 800;
-      pointer-events: none;
-      user-select: none;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
       z-index: 0;
     }
-    .wrap {
-      position: relative; z-index: 1;
-      width: 100%; max-width: 420px;
-      padding: 0 20px;
+
+    /* Left — manifesto text */
+    .left-panel {
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: relative;
+      z-index: 1;
     }
-    .intro {
+
+    .manifesto {
+      font-family: var(--serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 2;
+      color: var(--text-dim);
+      letter-spacing: 0.3px;
+    }
+
+    .manifesto .hi {
+      color: var(--text);
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    .manifesto-divider {
+      width: 30px;
+      height: 1px;
+      background: var(--red);
+      margin: 24px 0;
+    }
+
+    .left-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    /* Center — auth card */
+    .center-panel {
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-wrap {
       text-align: center;
       margin-bottom: 32px;
     }
-    .circle-a {
-      font-size: 72px;
+
+    .logo-a {
+      font-family: var(--display);
+      font-size: 86px;
+      line-height: 0.9;
       color: var(--red);
-      font-family: var(--head);
-      font-weight: 800;
-      text-shadow: 0 0 60px rgba(191,34,34,0.6);
       display: block;
+      letter-spacing: -2px;
+      text-shadow: 0 0 60px rgba(192,57,43,0.35);
       animation: breathe 4s ease-in-out infinite;
     }
+
     @keyframes breathe {
-      0%, 100% { text-shadow: 0 0 40px rgba(191,34,34,0.4); }
-      50%       { text-shadow: 0 0 80px rgba(191,34,34,0.9), 0 0 140px rgba(191,34,34,0.2); }
+      0%, 100% { text-shadow: 0 0 40px rgba(192,57,43,0.25); }
+      50%       { text-shadow: 0 0 80px rgba(192,57,43,0.5), 0 0 140px rgba(192,57,43,0.15); }
     }
-    .title {
-      font-family: var(--head);
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: 4px;
+
+    .logo-title {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 6px;
+      color: var(--text-hi);
       text-transform: uppercase;
-      color: #ddd;
-      margin: 10px 0 6px;
+      margin-top: 6px;
+      display: block;
     }
-    .tagline {
-      font-size: 11px;
+
+    .logo-sub {
+      font-size: 10px;
       color: var(--text-dim);
       letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 8px;
+      display: block;
     }
-    .premise {
-      font-size: 11px;
-      line-height: 1.8;
-      color: var(--dim);
-      border-left: 2px solid var(--red);
-      padding-left: 14px;
-      margin-bottom: 24px;
-      font-style: italic;
-    }
-    .card {
+
+    /* Card */
+    .auth-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-top: 2px solid var(--red);
     }
-    .tabs { display: flex; border-bottom: 1px solid var(--border); }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
     .tab {
-      flex: 1; padding: 13px;
+      flex: 1;
+      padding: 13px;
       text-align: center;
-      font-family: var(--head); font-size: 13px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase;
-      color: var(--dim); cursor: pointer; background: none; border: none;
+      font-family: var(--display);
+      font-size: 15px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      cursor: pointer;
+      background: none;
+      border: none;
       transition: all 0.2s;
     }
+
     .tab.active {
-      color: var(--red2); background: rgba(191,34,34,0.06);
-      border-bottom: 2px solid var(--red); margin-bottom: -1px;
+      color: var(--red2);
+      background: rgba(192,57,43,0.05);
+      border-bottom: 2px solid var(--red);
+      margin-bottom: -1px;
     }
-    .tab:hover:not(.active) { color: var(--text); }
+
+    .tab:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+    }
+
     .form-panel { padding: 24px; display: none; }
     .form-panel.active { display: block; }
-    label { display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 5px; }
-    .field { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
     input {
-      width: 100%; background: var(--bg3); border: 1px solid var(--border);
-      color: var(--text); font-family: var(--mono); font-size: 13px;
-      padding: 10px 12px; outline: none; transition: border-color 0.2s;
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text-hi);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 16px;
     }
+
     input:focus { border-color: var(--red); }
-    input::placeholder { color: var(--dim); }
+    input::placeholder { color: #333; }
+
     .btn {
-      width: 100%; padding: 13px; background: var(--red); color: #fff;
-      border: none; font-family: var(--head); font-size: 14px; font-weight: 700;
-      letter-spacing: 3px; text-transform: uppercase; cursor: pointer;
-      transition: background 0.2s; margin-top: 6px;
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      font-family: var(--display);
+      font-size: 17px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
     }
+
     .btn:hover { background: var(--red2); }
+
     .err {
-      background: rgba(191,34,34,0.08); border: 1px solid rgba(191,34,34,0.25);
-      color: var(--red2); padding: 9px 12px; font-size: 11px; margin-top: 12px; display: none;
+      background: rgba(192,57,43,0.08);
+      border: 1px solid rgba(192,57,43,0.2);
+      color: var(--red2);
+      padding: 9px 12px;
+      font-size: 11px;
+      margin-top: 12px;
+      display: none;
     }
+
     .err.show { display: block; }
-    .footer { text-align: center; font-size: 10px; color: var(--text-dim); margin-top: 20px; letter-spacing: 1px; }
+
     .disclaimer {
-      background: rgba(212,137,26,0.05); border: 1px solid rgba(212,137,26,0.12);
-      padding: 8px 14px; font-size: 10px; color: rgba(212,137,26,0.6);
-      letter-spacing: 1px; text-align: center; margin-bottom: 16px;
+      font-size: 9px;
+      color: #2a2a2a;
+      text-align: center;
+      margin-top: 16px;
+      letter-spacing: 1px;
+      line-height: 1.8;
+    }
+
+    /* Right — chapter listing */
+    .right-panel {
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 1px solid var(--border);
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    .right-label {
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    .chapter-list {
+      list-style: none;
+    }
+
+    .chapter-item {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .chapter-num {
+      font-family: var(--display);
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--red);
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .chapter-name {
+      font-size: 12px;
+      color: var(--text-hi);
+    }
+
+    .chapter-lock {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-left: auto;
+    }
+
+    @media (max-width: 900px) {
+      body { grid-template-columns: 1fr; }
+      .left-panel, .right-panel { display: none; }
+      .center-panel { padding: 24px; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-anarchy">Ⓐ</div>
-  <div class="wrap">
-    <div class="intro">
-      <span class="circle-a">Ⓐ</span>
-      <div class="title">The Anarchist's Handbook</div>
-      <div class="tagline">A persistent underground game</div>
-    </div>
 
-    <div class="premise">
-      "You are [PLAYER]. Broke, angry, and all out of luck. A true anarchist — not just in name, but in blood.
-      One day you find it: a battered, photocopied copy of The Anarchist's Handbook.
-      You read it cover to cover in one night. By morning, you know what you need to do.
-      The world is at your mercy."
+  <!-- LEFT — manifesto -->
+  <div class="left-panel">
+    <div class="left-label">The Situation</div>
+    <div class="manifesto">
+      <span class="hi">You are nobody.</span><br>
+      No job. No future.<br>
+      No illusions left about the system<br>
+      that made you that way.
+      <div class="manifesto-divider"></div>
+      You found the Handbook in a dumpster<br>
+      behind a copy shop —<br>
+      water-damaged, half the pages stuck<br>
+      together, but <span class="hi">it was all there.</span>
+      <div class="manifesto-divider"></div>
+      You read it cover to cover<br>
+      on a park bench in the rain.<br><br>
+      <span class="hi">You can't un-read it.</span>
+      <div class="manifesto-divider"></div>
+      The corporations own the buildings.<br>
+      The State owns the cops.<br>
+      The surveillance grid owns the streets.<br><br>
+      And you — you've got the Handbook<br>
+      and enough anger to do something.<br><br>
+      <span class="hi">Where do you start?</span>
     </div>
-
-    <div class="disclaimer">⚠ THIS IS A WORK OF FICTION — GAME CONTENT ONLY</div>
-
-    <div class="card">
-      <div class="tabs">
-        <button class="tab active" onclick="switchTab('login')">Enter</button>
-        <button class="tab" onclick="switchTab('register')">Join</button>
-      </div>
-      <div id="panel-login" class="form-panel active">
-        <div class="field"><label>Your Handle</label><input type="text" id="l-user" placeholder="street name" autocomplete="username"></div>
-        <div class="field"><label>Password</label><input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password"></div>
-        <button class="btn" onclick="doLogin()">Enter the Underground</button>
-        <div class="err" id="l-err"></div>
-      </div>
-      <div id="panel-register" class="form-panel">
-        <div class="field"><label>Choose a Handle</label><input type="text" id="r-user" placeholder="3-20 chars, letters/numbers/_-" maxlength="20"></div>
-        <div class="field"><label>Password</label><input type="password" id="r-pass" placeholder="min 6 characters"></div>
-        <div class="field"><label>Email (optional)</label><input type="email" id="r-email" placeholder="for account recovery"></div>
-        <button class="btn" onclick="doRegister()">Join the Underground</button>
-        <div class="err" id="r-err"></div>
-      </div>
-    </div>
-    <div class="footer">Text-based. Persistent. No graphics. Pure ideology.</div>
   </div>
 
-  <script>
-    function switchTab(tab) {
-      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
-      document.getElementById('panel-login').classList.toggle('active', tab==='login');
-      document.getElementById('panel-register').classList.toggle('active', tab==='register');
-    }
-    async function doLogin() {
-      const username = document.getElementById('l-user').value.trim();
-      const password = document.getElementById('l-pass').value;
-      const err = document.getElementById('l-err');
-      try {
-        const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password}) });
-        const data = await res.json();
-        if (data.error) { err.textContent = data.error; err.classList.add('show'); }
-        else window.location.href = data.redirect;
-      } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
-    }
-    async function doRegister() {
-      const username = document.getElementById('r-user').value.trim();
-      const password = document.getElementById('r-pass').value;
-      const email = document.getElementById('r-email').value.trim();
-      const err = document.getElementById('r-err');
-      try {
-        const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username,password,email}) });
-        const data = await res.json();
-        if (data.error) { err.textContent = data.error; err.classList.add('show'); }
-        else window.location.href = data.redirect;
-      } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
-    }
-    document.addEventListener('keydown', e => {
-      if (e.key !== 'Enter') return;
-      if (document.getElementById('panel-login').classList.contains('active')) doLogin(); else doRegister();
-    });
-  </script>
+  <!-- CENTER — auth -->
+  <div class="center-panel">
+    <div class="logo-wrap">
+      <span class="logo-a">Ⓐ</span>
+      <span class="logo-title">The Anarchist's Handbook</span>
+      <span class="logo-sub">A persistent text-based underground</span>
+    </div>
+
+    <div class="auth-card">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="tab" onclick="switchTab('register')">New Operative</button>
+      </div>
+
+      <div id="panel-login" class="form-panel active">
+        <label>Handle</label>
+        <input type="text" id="login-user" placeholder="your street name" autocomplete="username">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        <button class="btn" onclick="doLogin()">Enter</button>
+        <div class="err" id="login-err"></div>
+      </div>
+
+      <div id="panel-register" class="form-panel">
+        <label>Choose a Handle</label>
+        <input type="text" id="reg-user" placeholder="3–20 chars, letters/numbers/_-" maxlength="20">
+        <label>Password</label>
+        <input type="password" id="reg-pass" placeholder="min 6 characters">
+        <label>Email (optional)</label>
+        <input type="email" id="reg-email" placeholder="for account recovery">
+        <button class="btn" onclick="doRegister()">Begin</button>
+        <div class="err" id="register-err"></div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      Fictional game. Entertainment only. No real information is provided or implied.<br>
+      This is a persistent text RPG inspired by underground zine culture.
+    </div>
+  </div>
+
+  <!-- RIGHT — chapter preview -->
+  <div class="right-panel">
+    <div class="right-label">The Handbook — Contents</div>
+    <ul class="chapter-list">
+      <li class="chapter-item">
+        <span class="chapter-num">CH.1</span>
+        <span class="chapter-name">The Street</span>
+        <span class="chapter-lock">Unlocked</span>
+      </li>
+      <li class="chapter-item">
+        <span class="chapter-num">CH.2</span>
+        <span class="chapter-name">Direct Action</span>
+        <span class="chapter-lock">500 Influence</span>
+      </li>
+      <li class="chapter-item">
+        <span class="chapter-num">CH.3</span>
+        <span class="chapter-name">Information Warfare</span>
+        <span class="chapter-lock">2,000 Influence</span>
+      </li>
+      <li class="chapter-item">
+        <span class="chapter-num">CH.4</span>
+        <span class="chapter-name">The Network</span>
+        <span class="chapter-lock">5,000 Influence</span>
+      </li>
+      <li class="chapter-item">
+        <span class="chapter-num">CH.5</span>
+        <span class="chapter-name">Technical Operations</span>
+        <span class="chapter-lock">15,000 Influence</span>
+      </li>
+      <li class="chapter-item">
+        <span class="chapter-num">CH.6</span>
+        <span class="chapter-name">The Uprising</span>
+        <span class="chapter-lock">50,000 Influence</span>
+      </li>
+    </ul>
+  </div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t, i) =>
+      t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register'))
+    );
+    document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+    document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+  }
+
+  async function doLogin() {
+    const username = document.getElementById('login-user').value.trim();
+    const password = document.getElementById('login-pass').value;
+    const err = document.getElementById('login-err');
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.error) { err.textContent = data.error; err.classList.add('show'); }
+      else window.location.href = data.redirect;
+    } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
+  }
+
+  async function doRegister() {
+    const username = document.getElementById('reg-user').value.trim();
+    const password = document.getElementById('reg-pass').value;
+    const email    = document.getElementById('reg-email').value.trim();
+    const err = document.getElementById('register-err');
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ username, password, email })
+      });
+      const data = await res.json();
+      if (data.error) { err.textContent = data.error; err.classList.add('show'); }
+      else window.location.href = data.redirect;
+    } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('panel-login').classList.contains('active')) doLogin();
+    else doRegister();
+  });
+</script>
 </body>
 </html>

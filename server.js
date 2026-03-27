@@ -29,7 +29,7 @@ function requireAuth(req, res, next) {
 // ─── ROUTES ──────────────────────────────────────────────────────────────────
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/player', require('./routes/player').router);
-app.use('/api/actions', require('./routes/crimes'));
+app.use('/api/ops', require('./routes/operations'));
 app.use('/api/training', require('./routes/training'));
 
 // ─── PAGES ───────────────────────────────────────────────────────────────────
