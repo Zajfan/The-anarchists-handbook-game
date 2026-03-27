@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Anarchist's Handbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --bg2: #0f0f0f;
+      --bg3: #161616;
+      --border: #222;
+      --accent: #c8392b;
+      --accent2: #e84545;
+      --amber: #e8a030;
+      --green: #2ecc71;
+      --dim: #555;
+      --text: #c8c8c8;
+      --text-dim: #666;
+      --mono: 'Share Tech Mono', monospace;
+      --head: 'Oswald', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Background noise texture */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanline effect */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      padding: 0 20px;
+    }
+
+    .logo-area {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-symbol {
+      font-size: 56px;
+      line-height: 1;
+      color: var(--accent);
+      text-shadow: 0 0 40px rgba(200,57,43,0.5);
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 40px rgba(200,57,43,0.4); }
+      50% { text-shadow: 0 0 60px rgba(200,57,43,0.8), 0 0 120px rgba(200,57,43,0.3); }
+    }
+
+    .logo-title {
+      font-family: var(--head);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #fff;
+      margin: 12px 0 4px;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--accent);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-family: var(--head);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--dim);
+      cursor: pointer;
+      background: none;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--accent2);
+      background: rgba(200,57,43,0.06);
+      border-bottom: 2px solid var(--accent);
+      margin-bottom: -1px;
+    }
+
+    .tab:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .form-panel { padding: 28px; display: none; }
+    .form-panel.active { display: block; }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+    }
+
+    input::placeholder { color: var(--dim); }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-family: var(--head);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { background: var(--accent2); }
+    .btn:active { transform: translateY(1px); }
+
+    .error-msg {
+      background: rgba(200,57,43,0.1);
+      border: 1px solid rgba(200,57,43,0.3);
+      color: var(--accent2);
+      padding: 10px 12px;
+      font-size: 12px;
+      margin-top: 14px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+
+    .footer-text {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 24px;
+      letter-spacing: 1px;
+    }
+
+    .warning-strip {
+      background: rgba(232, 160, 48, 0.06);
+      border: 1px solid rgba(232, 160, 48, 0.15);
+      padding: 10px 14px;
+      font-size: 10px;
+      color: var(--amber);
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Glitch effect on logo */
+    @keyframes glitch {
+      0% { clip-path: none; transform: none; }
+      92% { clip-path: none; transform: none; }
+      93% { clip-path: polygon(0 20%, 100% 20%, 100% 30%, 0 30%); transform: translateX(-4px); }
+      94% { clip-path: polygon(0 50%, 100% 50%, 100% 70%, 0 70%); transform: translateX(4px); }
+      95% { clip-path: none; transform: none; }
+      100% { clip-path: none; transform: none; }
+    }
+
+    .logo-title { animation: glitch 8s infinite; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-area">
+      <div class="logo-symbol">Ⓐ</div>
+      <div class="logo-title">The Anarchist's Handbook</div>
+      <div class="logo-sub">A persistent criminal underworld</div>
+    </div>
+
+    <div class="warning-strip">
+      ⚠ FICTIONAL GAME — FOR ENTERTAINMENT ONLY
+    </div>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="tab" onclick="switchTab('register')">Create Account</button>
+      </div>
+
+      <!-- Login -->
+      <div id="panel-login" class="form-panel active">
+        <div class="field">
+          <label>Handle</label>
+          <input type="text" id="login-username" placeholder="your street name" autocomplete="username">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn" onclick="doLogin()">Enter the Underground</button>
+        <div class="error-msg" id="login-error"></div>
+      </div>
+
+      <!-- Register -->
+      <div id="panel-register" class="form-panel">
+        <div class="field">
+          <label>Choose a Handle</label>
+          <input type="text" id="reg-username" placeholder="3-20 chars, letters/numbers/_-" maxlength="20">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="min 6 characters">
+        </div>
+        <div class="field">
+          <label>Email (optional)</label>
+          <input type="email" id="reg-email" placeholder="for account recovery">
+        </div>
+        <button class="btn" onclick="doRegister()">Join the Underground</button>
+        <div class="error-msg" id="register-error"></div>
+      </div>
+    </div>
+
+    <div class="footer-text">
+      A text-based browser RPG. No graphics. No hand-holding. Pure grind.
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+      document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+    }
+
+    async function doLogin() {
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      const err = document.getElementById('login-error');
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (data.error) { err.textContent = data.error; err.classList.add('show'); }
+        else window.location.href = data.redirect;
+      } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
+    }
+
+    async function doRegister() {
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const err = document.getElementById('register-error');
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email })
+        });
+        const data = await res.json();
+        if (data.error) { err.textContent = data.error; err.classList.add('show'); }
+        else window.location.href = data.redirect;
+      } catch { err.textContent = 'Connection error.'; err.classList.add('show'); }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      if (document.getElementById('panel-login').classList.contains('active')) doLogin();
+      else doRegister();
+    });
+  </script>
+</body>
+</html>
