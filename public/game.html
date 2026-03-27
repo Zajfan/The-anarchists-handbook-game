@@ -5,1040 +5,852 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Anarchist's Handbook</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #080808;
-      --bg2: #0e0e0e;
-      --bg3: #141414;
-      --bg4: #1a1a1a;
-      --border: #1e1e1e;
-      --border2: #282828;
-      --accent: #c8392b;
-      --accent2: #e84545;
-      --amber: #e8a030;
-      --green: #27ae60;
-      --green2: #2ecc71;
-      --blue: #2980b9;
-      --purple: #8e44ad;
-      --dim: #444;
-      --text: #b8b8b8;
-      --text-dim: #555;
-      --text-bright: #ddd;
-      --mono: 'Share Tech Mono', monospace;
-      --head: 'Oswald', sans-serif;
-      --sidebar-w: 190px;
+      --bg:     #070707;
+      --bg2:    #0c0c0c;
+      --bg3:    #111;
+      --bg4:    #171717;
+      --border: #1c1c1c;
+      --bord2:  #242424;
+      --red:    #bf2222;
+      --red2:   #e03333;
+      --amber:  #d4891a;
+      --amber2: #e8a030;
+      --green:  #1e9e52;
+      --green2: #27c468;
+      --blue:   #2271b8;
+      --dim:    #3a3a3a;
+      --text:   #999;
+      --text2:  #bbb;
+      --bright: #ddd;
+      --mono:   'Share Tech Mono', monospace;
+      --head:   'Barlow Condensed', sans-serif;
+      --sw:     186px;
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     html, body { height: 100%; }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 13px;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
+      background: var(--bg); color: var(--text);
+      font-family: var(--mono); font-size: 13px;
+      display: flex; flex-direction: column; height: 100vh; overflow: hidden;
     }
 
-    /* ─── TOP BAR ─────────────────────────────────────────────────── */
+    /* ── TOPBAR ──────────────────────────────────────────────────── */
     #topbar {
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 10;
+      background: var(--bg2); border-bottom: 1px solid var(--border);
+      padding: 0 14px; height: 50px;
+      display: flex; align-items: center; gap: 0;
+      flex-shrink: 0; z-index: 10;
     }
-
-    .topbar-logo {
-      font-family: var(--head);
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-transform: uppercase;
-      margin-right: 24px;
-      white-space: nowrap;
+    .tb-logo {
+      font-family: var(--head); font-size: 18px; font-weight: 800;
+      letter-spacing: 3px; color: var(--red); text-transform: uppercase;
+      margin-right: 20px; white-space: nowrap; flex-shrink: 0;
     }
-
-    .topbar-logo span { color: var(--text-dim); font-weight: 300; }
-
-    .resource-bars {
-      display: flex;
-      gap: 20px;
-      flex: 1;
-      align-items: center;
+    .tb-logo em { color: var(--dim); font-style: normal; font-weight: 300; font-size: 13px; letter-spacing: 1px; }
+    .res-bars { display: flex; gap: 16px; flex: 1; align-items: center; }
+    .res-b { display: flex; align-items: center; gap: 7px; min-width: 120px; }
+    .res-lbl {
+      font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dim); width: 46px; flex-shrink: 0;
     }
-
-    .res-block {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 130px;
+    .res-track {
+      flex: 1; height: 7px; background: var(--bg4);
+      border: 1px solid var(--dim); position: relative; overflow: hidden;
     }
-
-    .res-label {
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      width: 42px;
-      flex-shrink: 0;
+    .res-fill { height: 100%; transition: width 0.4s; }
+    .res-fill.resolve { background: var(--amber2); }
+    .res-fill.nerve   { background: var(--red2); }
+    .res-fill.cond    { background: var(--green2); }
+    .res-fill.heat    { background: linear-gradient(90deg, #c0392b, #e84545); }
+    .res-val { font-size: 10px; color: var(--text2); width: 34px; text-align: right; flex-shrink: 0; }
+    .tb-right { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-shrink: 0; }
+    .cash-val { font-size: 13px; color: var(--green2); }
+    .cash-val em { font-size: 9px; color: var(--dim); font-style: normal; letter-spacing: 1px; margin-right: 3px; text-transform: uppercase; }
+    .handle { font-family: var(--head); font-size: 13px; font-weight: 600; letter-spacing: 1px; color: var(--text2); }
+    .logout {
+      background: none; border: 1px solid var(--dim); color: var(--dim);
+      font-family: var(--mono); font-size: 10px; padding: 4px 9px;
+      cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
     }
+    .logout:hover { border-color: var(--red2); color: var(--red2); }
 
-    .res-bar-wrap {
-      flex: 1;
-      height: 8px;
-      background: var(--bg4);
-      border: 1px solid var(--border2);
-      position: relative;
-      overflow: hidden;
-    }
+    /* ── LAYOUT ──────────────────────────────────────────────────── */
+    #layout { display: flex; flex: 1; overflow: hidden; }
 
-    .res-bar {
-      height: 100%;
-      transition: width 0.4s ease;
-    }
-
-    .res-bar.energy { background: var(--amber); }
-    .res-bar.nerve  { background: var(--accent2); }
-    .res-bar.hp     { background: var(--green); }
-
-    .res-val {
-      font-size: 10px;
-      color: var(--text-bright);
-      width: 36px;
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-left: auto;
-    }
-
-    .cash-display {
-      font-size: 13px;
-      color: var(--green2);
-      font-family: var(--mono);
-    }
-
-    .cash-display span {
-      font-size: 9px;
-      color: var(--text-dim);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-right: 4px;
-    }
-
-    .player-tag {
-      font-size: 11px;
-      color: var(--text-dim);
-      font-family: var(--head);
-      font-weight: 400;
-      letter-spacing: 1px;
-    }
-
-    .logout-btn {
-      background: none;
-      border: 1px solid var(--border2);
-      color: var(--dim);
-      font-family: var(--mono);
-      font-size: 10px;
-      padding: 4px 10px;
-      cursor: pointer;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-    }
-    .logout-btn:hover { border-color: var(--accent); color: var(--accent2); }
-
-    /* ─── LAYOUT ──────────────────────────────────────────────────── */
-    #layout {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    /* ─── SIDEBAR ─────────────────────────────────────────────────── */
+    /* ── SIDEBAR ─────────────────────────────────────────────────── */
     #sidebar {
-      width: var(--sidebar-w);
-      background: var(--bg2);
+      width: var(--sw); background: var(--bg2);
       border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      flex-shrink: 0;
+      display: flex; flex-direction: column;
+      overflow-y: auto; flex-shrink: 0;
     }
-
-    .nav-section {
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
+    .nav-sec { padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .nav-sec-lbl {
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); padding: 8px 12px 3px;
     }
-
-    .nav-section-label {
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      padding: 8px 14px 4px;
-    }
-
     .nav-item {
-      display: block;
-      padding: 9px 14px;
-      color: var(--text-dim);
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
-      border-left: 3px solid transparent;
-      user-select: none;
+      display: block; padding: 9px 12px;
+      color: var(--dim); font-size: 12px; cursor: pointer;
+      transition: all 0.15s; border-left: 3px solid transparent;
     }
+    .nav-item:hover { color: var(--text2); background: rgba(255,255,255,0.015); border-left-color: var(--bord2); }
+    .nav-item.active { color: var(--bright); background: rgba(191,34,34,0.07); border-left-color: var(--red); }
+    .nav-item .ic { margin-right: 7px; opacity: 0.6; }
+    .nav-item.active .ic { opacity: 1; }
 
-    .nav-item:hover {
-      color: var(--text-bright);
-      background: rgba(255,255,255,0.02);
-      border-left-color: var(--dim);
+    /* Sidebar status area */
+    .sidebar-foot {
+      margin-top: auto; padding: 10px 12px;
+      border-top: 1px solid var(--border); font-size: 10px; color: var(--dim);
     }
-
-    .nav-item.active {
-      color: var(--text-bright);
-      background: rgba(200,57,43,0.08);
-      border-left-color: var(--accent);
+    .status-dot {
+      display: inline-block; padding: 2px 7px 2px 5px;
+      font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+      border: 1px solid; margin-bottom: 5px;
     }
-
-    .nav-item .nav-icon { margin-right: 8px; opacity: 0.7; }
-
-    .sidebar-status {
-      margin-top: auto;
-      padding: 12px 14px;
+    .dot-active  { color: var(--green2); border-color: rgba(39,196,104,0.3); background: rgba(39,196,104,0.05); }
+    .dot-jail    { color: var(--red2);   border-color: rgba(224,51,51,0.3);  background: rgba(224,51,51,0.05); }
+    .dot-hosp    { color: var(--amber2); border-color: rgba(232,160,48,0.3); background: rgba(232,160,48,0.05); }
+    .sidebar-heat {
+      margin-top: 6px; padding-top: 6px;
       border-top: 1px solid var(--border);
-      font-size: 10px;
-      color: var(--text-dim);
+      font-size: 9px; letter-spacing: 1px;
     }
+    .heat-mini-bar { height: 4px; background: var(--bg4); border: 1px solid var(--dim); margin-top: 3px; overflow: hidden; }
+    .heat-mini-fill { height: 100%; background: var(--red); transition: width 0.4s; }
 
-    .status-pill {
-      display: inline-block;
-      padding: 2px 7px;
-      font-size: 9px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      border: 1px solid var(--border2);
-      color: var(--green2);
-      border-color: rgba(46, 204, 113, 0.3);
-      background: rgba(46, 204, 113, 0.06);
-    }
-
-    .status-pill.in-jail {
-      color: var(--accent2);
-      border-color: rgba(200,57,43,0.3);
-      background: rgba(200,57,43,0.06);
-    }
-
-    .status-pill.in-hospital {
-      color: var(--amber);
-      border-color: rgba(232,160,48,0.3);
-      background: rgba(232,160,48,0.06);
-    }
-
-    /* ─── MAIN CONTENT ────────────────────────────────────────────── */
-    #main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-
-    #content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-    }
-
-    /* ─── ACTIVITY LOG (right panel) ──────────────────────────────── */
+    /* ── MAIN + LOG ──────────────────────────────────────────────── */
+    #main { flex: 1; display: flex; overflow: hidden; }
+    #content { flex: 1; overflow-y: auto; padding: 16px; }
     #log-panel {
-      width: 240px;
-      background: var(--bg2);
+      width: 230px; background: var(--bg2);
       border-left: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
+      display: flex; flex-direction: column; flex-shrink: 0;
     }
-
-    .log-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      font-family: var(--head);
+    .log-hdr {
+      padding: 9px 12px; border-bottom: 1px solid var(--border);
+      font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--dim); font-family: var(--head); font-weight: 600;
     }
-
-    #log-feed {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 0;
-    }
-
+    #log-feed { flex: 1; overflow-y: auto; }
     .log-entry {
-      padding: 7px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.02);
-      font-size: 11px;
-      line-height: 1.5;
-      animation: fadeIn 0.3s ease;
+      padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.018);
+      font-size: 11px; line-height: 1.5;
+      animation: slideIn 0.25s ease;
     }
+    @keyframes slideIn { from { opacity:0; transform: translateX(6px); } to { opacity:1; } }
+    .log-entry .la { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--dim); }
+    .log-entry .ld { color: var(--text2); margin-top: 1px; }
+    .log-entry .lt { font-size: 9px; color: var(--dim); }
+    .log-entry.suc .la { color: var(--green); }
+    .log-entry.fail .la { color: var(--red2); }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
-
-    .log-entry .log-action { color: var(--text-dim); font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
-    .log-entry .log-detail { color: var(--text); margin-top: 2px; }
-    .log-entry .log-time   { color: var(--dim); font-size: 9px; }
-    .log-entry.success .log-action { color: var(--green); }
-    .log-entry.fail .log-action { color: var(--accent2); }
-
-    /* ─── PAGE PANELS ─────────────────────────────────────────────── */
+    /* ── PAGES ───────────────────────────────────────────────────── */
     .page { display: none; }
     .page.active { display: block; }
-
-    .page-title {
-      font-family: var(--head);
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-bright);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 10px;
-      margin-bottom: 16px;
+    .pg-title {
+      font-family: var(--head); font-size: 22px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--bright);
+      border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 16px;
     }
+    .pg-title span { color: var(--red); }
+    .wip { color: var(--dim); font-size: 12px; line-height: 1.8; }
+    .wip strong { color: var(--amber); }
 
-    .page-title span {
-      color: var(--accent);
-    }
-
-    /* ─── OVERVIEW PAGE ───────────────────────────────────────────── */
+    /* ── OVERVIEW ────────────────────────────────────────────────── */
     .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px; margin-bottom: 14px;
     }
-
     .stat-box {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--border2);
-      padding: 12px 14px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-top: 2px solid var(--dim); padding: 10px 12px;
     }
-
-    .stat-box.str { border-top-color: var(--accent2); }
-    .stat-box.agi { border-top-color: #f39c12; }
-    .stat-box.sth { border-top-color: #16a085; }
-    .stat-box.int { border-top-color: var(--blue); }
-    .stat-box.cha { border-top-color: var(--purple); }
-    .stat-box.not { border-top-color: var(--amber); }
-
-    .stat-name {
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 6px;
+    .stat-box.s-res { border-top-color: #e84545; }
+    .stat-box.s-agi { border-top-color: #f39c12; }
+    .stat-box.s-sth { border-top-color: #16a085; }
+    .stat-box.s-int { border-top-color: var(--blue); }
+    .stat-box.s-cha { border-top-color: #8e44ad; }
+    .stat-box.s-not { border-top-color: var(--amber); }
+    .sn { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 5px; }
+    .sv { font-size: 22px; color: var(--bright); font-family: var(--head); font-weight: 700; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .info-card { background: var(--bg3); border: 1px solid var(--border); padding: 10px 12px; }
+    .ic-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); margin-bottom: 4px; }
+    .ic-val { font-size: 17px; color: var(--green2); font-family: var(--head); font-weight: 700; }
+    .ic-val.red { color: var(--red2); }
+    .notoriety-rank {
+      background: rgba(212,137,26,0.06); border: 1px solid rgba(212,137,26,0.15);
+      border-left: 3px solid var(--amber); padding: 12px 14px; margin-bottom: 14px;
     }
+    .nr-label { font-family: var(--head); font-size: 16px; font-weight: 700; color: var(--amber); letter-spacing: 1px; }
+    .nr-desc { font-size: 11px; color: var(--dim); margin-top: 4px; }
 
-    .stat-val {
-      font-size: 24px;
-      color: var(--text-bright);
-      font-family: var(--head);
-      font-weight: 600;
+    /* ── STATUS BANNERS ──────────────────────────────────────────── */
+    .banner {
+      border-left: 3px solid; padding: 10px 12px; margin-bottom: 12px; font-size: 12px;
     }
+    .banner.jail { background: rgba(191,34,34,0.07); border-color: var(--red); color: var(--red2); }
+    .banner.hosp { background: rgba(212,137,26,0.07); border-color: var(--amber); color: var(--amber2); }
+    .banner .timer { font-family: var(--mono); font-weight: bold; }
 
-    .info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
+    /* ── ACTIONS (HANDBOOK CHAPTERS) ─────────────────────────────── */
+    .chapter-hdr {
+      font-family: var(--head); font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--red);
+      border-left: 3px solid var(--red); padding-left: 10px;
+      margin: 18px 0 8px;
     }
-
-    .info-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
+    .chapter-hdr:first-child { margin-top: 0; }
+    .chapter-quote {
+      font-size: 10px; color: var(--dim); font-style: italic;
+      margin-left: 13px; margin-bottom: 10px; padding-left: 10px;
+      border-left: 1px solid var(--border);
     }
-
-    .info-card-label {
-      font-size: 9px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 6px;
+    .action-row {
+      background: var(--bg3); border: 1px solid var(--border);
+      padding: 11px 13px; margin-bottom: 6px;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 10px; align-items: center; transition: border-color 0.15s;
     }
-
-    .info-card-val {
-      font-size: 18px;
-      color: var(--green2);
-      font-family: var(--head);
+    .action-row:hover:not(.locked) { border-color: var(--bord2); }
+    .action-row.locked { opacity: 0.38; }
+    .action-row.endgame { border-color: rgba(191,34,34,0.3); }
+    .an { font-size: 13px; color: var(--bright); margin-bottom: 3px; }
+    .ad { font-size: 11px; color: var(--dim); line-height: 1.5; }
+    .am {
+      font-size: 10px; color: var(--dim); margin-top: 4px;
+      display: flex; gap: 10px; flex-wrap: wrap;
     }
-
-    /* ─── CRIMES PAGE ─────────────────────────────────────────────── */
-    .tier-header {
-      font-family: var(--head);
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin: 16px 0 8px;
-      padding-left: 4px;
-      border-left: 3px solid var(--accent);
-      padding-left: 10px;
-    }
-
-    .crime-row {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      margin-bottom: 6px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      transition: border-color 0.15s;
-    }
-
-    .crime-row:hover:not(.locked) { border-color: var(--border2); }
-    .crime-row.locked { opacity: 0.45; }
-
-    .crime-name {
-      font-size: 13px;
-      color: var(--text-bright);
-      margin-bottom: 3px;
-    }
-
-    .crime-desc {
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    .crime-meta {
-      font-size: 10px;
-      color: var(--dim);
-      margin-top: 4px;
-    }
-
-    .crime-meta .nerve-cost { color: var(--accent2); }
-    .crime-meta .reward { color: var(--green); }
-
-    .crime-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: var(--head);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 8px 16px;
-      cursor: pointer;
-      transition: background 0.15s;
+    .am .nerve-c { color: var(--red2); }
+    .am .reward { color: var(--green); }
+    .am .heat-c { color: var(--amber2); }
+    .am .lock-r { color: var(--red); font-size: 10px; }
+    .act-btn {
+      background: var(--red); color: #fff; border: none;
+      font-family: var(--head); font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 8px 14px; cursor: pointer; transition: background 0.15s;
       white-space: nowrap;
     }
-
-    .crime-btn:hover { background: var(--accent2); }
-    .crime-btn:disabled { background: var(--dim); cursor: not-allowed; opacity: 0.5; }
-
-    /* ─── TRAINING PAGE ───────────────────────────────────────────── */
-    .exercise-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 10px;
+    .act-btn:hover { background: var(--red2); }
+    .act-btn:disabled { background: var(--dim); cursor: not-allowed; opacity: 0.5; }
+    .act-btn.endgame-btn {
+      background: none; border: 1px solid var(--red);
+      color: var(--red);
     }
+    .act-btn.endgame-btn:hover { background: var(--red); color: #fff; }
 
-    .exercise-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      padding: 14px;
+    /* ── TRAINING ────────────────────────────────────────────────── */
+    .train-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 9px;
     }
-
-    .exercise-name {
-      font-size: 13px;
-      color: var(--text-bright);
-      margin-bottom: 4px;
+    .train-card {
+      background: var(--bg3); border: 1px solid var(--border); padding: 13px;
     }
-
-    .exercise-stat {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 10px;
-    }
-
-    .exercise-cost {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-bottom: 10px;
-    }
-
-    .exercise-btn {
-      width: 100%;
-      padding: 8px;
-      background: var(--bg4);
-      border: 1px solid var(--border2);
-      color: var(--amber);
-      font-family: var(--head);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
+    .tn { font-size: 13px; color: var(--bright); margin-bottom: 3px; }
+    .td { font-size: 11px; color: var(--dim); line-height: 1.5; margin-bottom: 6px; }
+    .tf { font-size: 10px; color: var(--dim); font-style: italic; margin-bottom: 8px; border-left: 2px solid var(--border); padding-left: 8px; }
+    .ts { font-size: 10px; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .train-btn {
+      width: 100%; padding: 8px; background: var(--bg4);
+      border: 1px solid var(--bord2); color: var(--amber);
+      font-family: var(--head); font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
       transition: all 0.15s;
     }
+    .train-btn:hover:not(:disabled) { background: rgba(212,137,26,0.1); border-color: var(--amber); }
+    .train-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .exercise-btn:hover:not(:disabled) {
-      background: rgba(232,160,48,0.1);
-      border-color: var(--amber);
+    /* ── IDEOLOGY ────────────────────────────────────────────────── */
+    .ideology-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 9px; }
+    .ideology-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-top: 2px solid var(--dim); padding: 13px; cursor: pointer;
+      transition: all 0.2s;
     }
+    .ideology-card:hover { border-top-color: var(--red); }
+    .ideology-card.selected { border-top-color: var(--red); background: rgba(191,34,34,0.05); }
+    .ideology-name { font-family: var(--head); font-size: 15px; font-weight: 700; color: var(--bright); margin-bottom: 4px; }
+    .ideology-quote { font-size: 10px; color: var(--dim); font-style: italic; margin-bottom: 8px; line-height: 1.6; }
+    .ideology-desc { font-size: 11px; color: var(--text); line-height: 1.5; }
+    .ideology-select-btn {
+      width: 100%; margin-top: 10px; padding: 8px;
+      background: var(--red); border: none; color: #fff;
+      font-family: var(--head); font-size: 11px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    }
+    .ideology-select-btn:hover { background: var(--red2); }
+    .ideology-select-btn.chosen { background: var(--dim); cursor: default; }
 
-    .exercise-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    /* ─── TOAST / FEEDBACK ────────────────────────────────────────── */
+    /* ── TOAST ───────────────────────────────────────────────────── */
     #toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: var(--bg3);
-      border: 1px solid var(--border2);
-      border-left: 3px solid var(--accent);
-      padding: 14px 18px;
-      font-size: 12px;
-      max-width: 320px;
-      z-index: 1000;
-      transform: translateX(120%);
-      transition: transform 0.25s ease;
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--bg3); border: 1px solid var(--bord2);
+      border-left: 3px solid var(--red); padding: 13px 16px;
+      font-size: 12px; max-width: 310px; z-index: 1000;
+      transform: translateX(120%); transition: transform 0.25s ease;
       line-height: 1.5;
     }
-
     #toast.show { transform: translateX(0); }
     #toast.success { border-left-color: var(--green2); }
-    #toast.fail { border-left-color: var(--accent2); }
-    #toast.info { border-left-color: var(--amber); }
+    #toast.info    { border-left-color: var(--amber2); }
+    #toast .tt { font-family: var(--head); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); margin-bottom: 3px; }
+    #toast .tm { color: var(--bright); }
+    #toast .tr { color: var(--green2); font-size: 11px; margin-top: 3px; }
+    #toast .th { color: var(--amber2); font-size: 11px; }
 
-    #toast .toast-title {
-      font-family: var(--head);
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 4px;
-    }
-
-    #toast .toast-msg { color: var(--text-bright); }
-    #toast .toast-reward { color: var(--green2); font-size: 11px; margin-top: 4px; }
-
-    /* ─── SCROLLBAR ───────────────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 4px; }
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border2); }
-    ::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+    ::-webkit-scrollbar-thumb { background: var(--bord2); }
 
-    /* Status banner */
-    .status-banner {
-      background: rgba(200,57,43,0.08);
-      border: 1px solid rgba(200,57,43,0.2);
-      border-left: 3px solid var(--accent);
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      font-size: 12px;
-      color: var(--accent2);
-    }
-
-    .status-banner.hospital {
-      background: rgba(232,160,48,0.08);
-      border-color: rgba(232,160,48,0.2);
-      border-left-color: var(--amber);
-      color: var(--amber);
-    }
-
-    .timer { font-family: var(--mono); font-weight: bold; }
+    /* Heat warning flash */
+    @keyframes heatFlash { 0%, 100% { opacity:1; } 50% { opacity:0.4; } }
+    .heat-high { animation: heatFlash 1.5s infinite; }
   </style>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <div id="topbar">
-  <div class="topbar-logo">Ⓐ <span>TAH</span></div>
-
-  <div class="resource-bars">
-    <div class="res-block">
-      <div class="res-label">Energy</div>
-      <div class="res-bar-wrap">
-        <div class="res-bar energy" id="bar-energy" style="width:100%"></div>
-      </div>
+  <div class="tb-logo">Ⓐ <em>TAH</em></div>
+  <div class="res-bars">
+    <div class="res-b">
+      <div class="res-lbl">Resolve</div>
+      <div class="res-track"><div class="res-fill resolve" id="bar-energy" style="width:100%"></div></div>
       <div class="res-val" id="val-energy">150/150</div>
     </div>
-    <div class="res-block">
-      <div class="res-label">Nerve</div>
-      <div class="res-bar-wrap">
-        <div class="res-bar nerve" id="bar-nerve" style="width:100%"></div>
-      </div>
+    <div class="res-b">
+      <div class="res-lbl">Nerve</div>
+      <div class="res-track"><div class="res-fill nerve" id="bar-nerve" style="width:100%"></div></div>
       <div class="res-val" id="val-nerve">50/50</div>
     </div>
-    <div class="res-block">
-      <div class="res-label">HP</div>
-      <div class="res-bar-wrap">
-        <div class="res-bar hp" id="bar-hp" style="width:100%"></div>
-      </div>
+    <div class="res-b">
+      <div class="res-lbl">Condition</div>
+      <div class="res-track"><div class="res-fill cond" id="bar-hp" style="width:100%"></div></div>
       <div class="res-val" id="val-hp">100/100</div>
     </div>
+    <div class="res-b">
+      <div class="res-lbl">Heat</div>
+      <div class="res-track"><div class="res-fill heat" id="bar-heat" style="width:0%"></div></div>
+      <div class="res-val" id="val-heat">0</div>
+    </div>
   </div>
-
-  <div class="topbar-right">
-    <div class="cash-display"><span>$</span><span id="val-cash">0</span></div>
-    <div class="player-tag" id="player-tag">Loading...</div>
-    <button class="logout-btn" onclick="doLogout()">[ logout ]</button>
+  <div class="tb-right">
+    <div class="cash-val"><em>scrip</em><span id="val-cash">0</span></div>
+    <div class="handle" id="player-handle">—</div>
+    <button class="logout" onclick="doLogout()">[ out ]</button>
   </div>
 </div>
 
 <!-- LAYOUT -->
 <div id="layout">
-
-  <!-- SIDEBAR -->
   <div id="sidebar">
-    <div class="nav-section">
-      <div class="nav-section-label">Main</div>
-      <div class="nav-item active" onclick="nav('overview')"><span class="nav-icon">◈</span>Overview</div>
-      <div class="nav-item" onclick="nav('crimes')"><span class="nav-icon">⚡</span>Crimes</div>
-      <div class="nav-item" onclick="nav('training')"><span class="nav-icon">⬆</span>Gym / Training</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Your File</div>
+      <div class="nav-item active" onclick="nav('overview')"><span class="ic">◈</span>Overview</div>
+      <div class="nav-item" onclick="nav('ideology')"><span class="ic">⬟</span>Ideology</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-label">Economy</div>
-      <div class="nav-item" onclick="nav('market')"><span class="nav-icon">◎</span>Black Market</div>
-      <div class="nav-item" onclick="nav('bank')"><span class="nav-icon">▣</span>Underground Bank</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">The Handbook</div>
+      <div class="nav-item" onclick="nav('actions')"><span class="ic">⚡</span>Direct Actions</div>
+      <div class="nav-item" onclick="nav('training')"><span class="ic">↑</span>Preparation</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-label">Social</div>
-      <div class="nav-item" onclick="nav('cell')"><span class="nav-icon">◉</span>Your Cell</div>
-      <div class="nav-item" onclick="nav('directory')"><span class="nav-icon">≡</span>Player Directory</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">Underground</div>
+      <div class="nav-item" onclick="nav('cell')"><span class="ic">◉</span>Your Cell</div>
+      <div class="nav-item" onclick="nav('market')"><span class="ic">◎</span>Black Market</div>
+      <div class="nav-item" onclick="nav('safehouse')"><span class="ic">▣</span>Safe House</div>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-label">World</div>
-      <div class="nav-item" onclick="nav('district')"><span class="nav-icon">⬡</span>Districts</div>
-      <div class="nav-item" onclick="nav('leaderboard')"><span class="nav-icon">△</span>Leaderboard</div>
+    <div class="nav-sec">
+      <div class="nav-sec-lbl">World</div>
+      <div class="nav-item" onclick="nav('leaderboard')"><span class="ic">△</span>Most Wanted</div>
     </div>
-
-    <div class="sidebar-status">
-      <div id="sidebar-status-pill"><span class="status-pill">● ACTIVE</span></div>
-      <div style="margin-top:6px;font-size:9px;" id="sidebar-level">LVL 1 · 0 XP</div>
+    <div class="sidebar-foot">
+      <div id="s-status"><span class="status-dot dot-active">● ACTIVE</span></div>
+      <div style="font-size:9px;margin-top:4px;color:var(--dim);" id="s-level">LVL 1</div>
+      <div id="s-rank" style="font-size:9px;color:var(--amber);margin-top:2px;"></div>
+      <div class="sidebar-heat">
+        <span id="s-heat-label" style="color:var(--dim);">HEAT: 0</span>
+        <div class="heat-mini-bar"><div class="heat-mini-fill" id="s-heat-bar" style="width:0%"></div></div>
+      </div>
     </div>
   </div>
 
-  <!-- MAIN -->
   <div id="main">
     <div id="content">
 
-      <!-- OVERVIEW PAGE -->
+      <!-- OVERVIEW -->
       <div class="page active" id="page-overview">
-        <div class="page-title">Street <span>Overview</span></div>
-        <div id="status-banners"></div>
-
+        <div class="pg-title"><span>Ⓐ</span> Operative File</div>
+        <div id="banners"></div>
+        <div id="notoriety-rank-block"></div>
         <div class="stats-grid" id="stats-grid">
-          <div class="stat-box str"><div class="stat-name">Strength</div><div class="stat-val" id="stat-str">-</div></div>
-          <div class="stat-box agi"><div class="stat-name">Agility</div><div class="stat-val" id="stat-agi">-</div></div>
-          <div class="stat-box sth"><div class="stat-name">Stealth</div><div class="stat-val" id="stat-sth">-</div></div>
-          <div class="stat-box int"><div class="stat-name">Intellect</div><div class="stat-val" id="stat-int">-</div></div>
-          <div class="stat-box cha"><div class="stat-name">Charisma</div><div class="stat-val" id="stat-cha">-</div></div>
-          <div class="stat-box not"><div class="stat-name">Notoriety</div><div class="stat-val" id="stat-not">-</div></div>
+          <div class="stat-box s-res"><div class="sn">Resolve</div><div class="sv" id="sv-res">-</div></div>
+          <div class="stat-box s-agi"><div class="sn">Agility</div><div class="sv" id="sv-agi">-</div></div>
+          <div class="stat-box s-sth"><div class="sn">Stealth</div><div class="sv" id="sv-sth">-</div></div>
+          <div class="stat-box s-int"><div class="sn">Intellect</div><div class="sv" id="sv-int">-</div></div>
+          <div class="stat-box s-cha"><div class="sn">Charisma</div><div class="sv" id="sv-cha">-</div></div>
+          <div class="stat-box s-not"><div class="sn">Notoriety</div><div class="sv" id="sv-not">-</div></div>
         </div>
-
         <div class="info-grid">
-          <div class="info-card">
-            <div class="info-card-label">Cash on Hand</div>
-            <div class="info-card-val" id="ov-cash">-</div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-label">In the Bank</div>
-            <div class="info-card-val" id="ov-bank">-</div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-label">Level / XP</div>
-            <div class="info-card-val" id="ov-level">-</div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-label">Crimes Committed</div>
-            <div class="info-card-val" id="ov-crimes">-</div>
-          </div>
+          <div class="info-card"><div class="ic-lbl">Scrip (on hand)</div><div class="ic-val" id="iv-cash">-</div></div>
+          <div class="info-card"><div class="ic-lbl">Heat Level</div><div class="ic-val red" id="iv-heat">-</div></div>
+          <div class="info-card"><div class="ic-lbl">Level / XP</div><div class="ic-val" id="iv-level">-</div></div>
+          <div class="info-card"><div class="ic-lbl">Ideology</div><div class="ic-val" id="iv-ideology">Undeclared</div></div>
         </div>
       </div>
 
-      <!-- CRIMES PAGE -->
-      <div class="page" id="page-crimes">
-        <div class="page-title">Commit <span>Crimes</span></div>
-        <div id="crime-status-msg"></div>
-        <div id="crimes-list">Loading...</div>
-      </div>
-
-      <!-- TRAINING PAGE -->
-      <div class="page" id="page-training">
-        <div class="page-title">Underground <span>Gym</span></div>
-        <p style="color:var(--text-dim);font-size:11px;margin-bottom:16px;">
-          Train your body and mind. Each session costs Energy. Stat gains aren't guaranteed — diminishing returns apply.
+      <!-- IDEOLOGY -->
+      <div class="page" id="page-ideology">
+        <div class="pg-title">Your <span>Ideology</span></div>
+        <p class="wip" style="margin-bottom:16px;">
+          Choose your ideological stance. This shapes your bonuses, your contacts, and ultimately how you're remembered.
+          <br><strong>Once set, this cannot be changed.</strong>
         </p>
-        <div class="exercise-grid" id="exercise-grid">Loading...</div>
+        <div class="ideology-grid" id="ideology-grid"></div>
       </div>
 
-      <!-- PLACEHOLDER PAGES -->
-      <div class="page" id="page-market">
-        <div class="page-title">Black <span>Market</span></div>
-        <p style="color:var(--text-dim)">Coming in v0.2 — Buy tools, weapons, and consumables. Trade with other players.</p>
+      <!-- ACTIONS -->
+      <div class="page" id="page-actions">
+        <div class="pg-title">The <span>Handbook</span></div>
+        <div id="action-status"></div>
+        <div id="actions-list">Loading...</div>
       </div>
-      <div class="page" id="page-bank">
-        <div class="page-title">Underground <span>Bank</span></div>
-        <p style="color:var(--text-dim)">Coming in v0.2 — Store cash safely. Earn interest. Avoid muggings.</p>
+
+      <!-- TRAINING -->
+      <div class="page" id="page-training">
+        <div class="pg-title">Preparation &amp; <span>Training</span></div>
+        <p class="wip" style="margin-bottom:14px;">
+          Sharpen your skills. Each session costs Resolve. Stat gains are probabilistic — diminishing returns apply as you improve.
+        </p>
+        <div class="train-grid" id="train-grid">Loading...</div>
       </div>
+
+      <!-- PLACEHOLDERS -->
       <div class="page" id="page-cell">
-        <div class="page-title">Your <span>Cell</span></div>
-        <p style="color:var(--text-dim)">Coming in v0.3 — Form or join an underground cell. Control territory. Run operations.</p>
+        <div class="pg-title">Your <span>Cell</span></div>
+        <p class="wip">Coming in v0.3. Form or join an underground cell. Run coordinated operations. Control territory.<br><strong>Informants are a risk at high heat.</strong></p>
       </div>
-      <div class="page" id="page-directory">
-        <div class="page-title">Player <span>Directory</span></div>
-        <p style="color:var(--text-dim)">Coming in v0.3 — Find other players. View profiles. Issue challenges.</p>
+      <div class="page" id="page-market">
+        <div class="pg-title">Black <span>Market</span></div>
+        <p class="wip">Coming in v0.2. Buy tools, components, and consumables. Sell what you don't need.<br><strong>No receipts. No questions.</strong></p>
       </div>
-      <div class="page" id="page-district">
-        <div class="page-title"><span>Districts</span></div>
-        <p style="color:var(--text-dim)">Coming in v0.4 — Travel to different parts of the city. New crimes, new dangers.</p>
+      <div class="page" id="page-safehouse">
+        <div class="pg-title">Safe <span>House</span></div>
+        <p class="wip">Coming in v0.2. Upgrade your base. A better safe house unlocks crafting, labs, and faster heat decay.<br><strong>Keep the rent paid or lose everything.</strong></p>
       </div>
       <div class="page" id="page-leaderboard">
-        <div class="page-title"><span>Leaderboard</span></div>
-        <p style="color:var(--text-dim)">Coming soon — Who runs this city? Check the rankings.</p>
+        <div class="pg-title">Most <span>Wanted</span></div>
+        <p class="wip">Coming soon. Who has the highest notoriety? Who's been jailed the most? Who published a manifesto?</p>
       </div>
 
     </div>
 
-    <!-- ACTIVITY LOG -->
+    <!-- LOG PANEL -->
     <div id="log-panel">
-      <div class="log-header">Activity Feed</div>
+      <div class="log-hdr">Operation Log</div>
       <div id="log-feed">
-        <div class="log-entry" style="color:var(--text-dim);font-size:11px;padding:14px;">
-          No activity yet...
-        </div>
+        <div class="log-entry" style="color:var(--dim);font-size:11px;padding:12px;">No actions logged yet.</div>
       </div>
     </div>
-
   </div>
 </div>
 
 <!-- TOAST -->
 <div id="toast">
-  <div class="toast-title" id="toast-title"></div>
-  <div class="toast-msg" id="toast-msg"></div>
-  <div class="toast-reward" id="toast-reward"></div>
+  <div class="tt" id="tt"></div>
+  <div class="tm" id="tm"></div>
+  <div class="tr" id="tr"></div>
+  <div class="th" id="th"></div>
 </div>
 
 <script>
-// ─── STATE ────────────────────────────────────────────────────────────────────
-let playerData = null;
-let regenData = null;
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const CHAPTER_QUOTES = {
+  1: '"Before you can change the world, you have to understand it."',
+  2: '"The enemy\'s systems are open books if you know how to read them."',
+  3: '"Infrastructure is the skeleton of control. Break a bone."',
+  4: '"Chemistry is just physics you can smell."',
+  5: '"Every system has a backdoor. Find it."',
+  6: '"There is a time for words. That time has passed."',
+};
+
+const HEAT_LABELS = ['Ghost','Noticed','Watched','Hunted','Priority Target'];
+const HEAT_COLORS = ['#27c468','#f39c12','#e67e22','#e84545','#bf2222'];
+
+const IDEOLOGIES = {
+  black_bloc: {
+    name: 'Black Bloc',
+    flavor: '"Property destruction is not violence. Violence is what they do."',
+    description: 'Direct action. Confront the system physically. No half-measures. Bonuses to street-level sabotage and confrontation.',
+  },
+  hacktivist: {
+    name: 'Hacktivist',
+    flavor: '"We are anonymous. We do not forgive. We do not forget."',
+    description: 'Information is power. The network is the battlefield. Bonuses to electronic warfare and stealth ops.',
+  },
+  eco_anarchist: {
+    name: 'Eco-Anarchist',
+    flavor: '"The earth doesn\'t need us. We need it."',
+    description: 'Corporations are destroying the planet. Destroy them first. Bonuses to infrastructure sabotage.',
+  },
+  insurrectionist: {
+    name: 'Insurrectionist',
+    flavor: '"We tried petitions. We tried marches. Now we try something else."',
+    description: 'Waiting accomplishes nothing. Escalate everything. Chapter 6 unlocks faster. Nerve max bonus.',
+  },
+  syndicalist: {
+    name: 'Syndicalist',
+    flavor: '"An injury to one is an injury to all."',
+    description: 'Workers organised are the only force that can stop capital. Bonuses to recruitment and propaganda.',
+  },
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+let player = null;
 let currentPage = 'overview';
 
-// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+
 function nav(page) {
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-
-  const clicked = [...document.querySelectorAll('.nav-item')].find(el =>
-    el.getAttribute('onclick')?.includes(`'${page}'`)
-  );
-  if (clicked) clicked.classList.add('active');
-
+  const item = [...document.querySelectorAll('.nav-item')].find(el => el.getAttribute('onclick')?.includes(`'${page}'`));
+  if (item) item.classList.add('active');
   const pg = document.getElementById(`page-${page}`);
   if (pg) pg.classList.add('active');
-
   currentPage = page;
-
-  if (page === 'crimes') loadCrimes();
-  if (page === 'training') loadTraining();
+  if (page === 'actions')    loadActions();
+  if (page === 'training')   loadTraining();
+  if (page === 'ideology')   renderIdeology();
 }
 
-// ─── PLAYER DATA ──────────────────────────────────────────────────────────────
+// ─── PLAYER ──────────────────────────────────────────────────────────────────
+
 async function loadPlayer() {
-  try {
-    const res = await fetch('/api/player/me');
-    const data = await res.json();
-    if (data.error) { window.location.href = '/'; return; }
-    playerData = data.player;
-    regenData = data.regen;
-    updateUI();
-  } catch (err) {
-    console.error('Failed to load player', err);
-  }
+  const res = await fetch('/api/player/me');
+  const data = await res.json();
+  if (data.error) { window.location.href = '/'; return; }
+  player = data.player;
+  updateUI();
 }
 
 function updateUI() {
-  if (!playerData) return;
-  const p = playerData;
+  if (!player) return;
+  const p = player;
 
   // Bars
   setBar('energy', p.energy, p.energy_max);
   setBar('nerve', p.nerve, p.nerve_max);
   setBar('hp', p.hp, p.hp_max);
+  const heatPct = Math.min(100, p.heat);
+  document.getElementById('bar-heat').style.width = heatPct + '%';
+  document.getElementById('val-heat').textContent = p.heat;
 
-  // Cash
   document.getElementById('val-cash').textContent = p.cash.toLocaleString();
-  document.getElementById('player-tag').textContent = p.username.toUpperCase();
+  document.getElementById('player-handle').textContent = p.username.toUpperCase();
 
-  // Overview stats
-  document.getElementById('stat-str').textContent = p.strength;
-  document.getElementById('stat-agi').textContent = p.agility;
-  document.getElementById('stat-sth').textContent = p.stealth;
-  document.getElementById('stat-int').textContent = p.intellect;
-  document.getElementById('stat-cha').textContent = p.charisma;
-  document.getElementById('stat-not').textContent = p.notoriety;
+  // Stats
+  document.getElementById('sv-res').textContent = p.resolve || 1;
+  document.getElementById('sv-agi').textContent = p.agility;
+  document.getElementById('sv-sth').textContent = p.stealth;
+  document.getElementById('sv-int').textContent = p.intellect;
+  document.getElementById('sv-cha').textContent = p.charisma;
+  document.getElementById('sv-not').textContent = p.notoriety;
 
-  document.getElementById('ov-cash').textContent = '$' + p.cash.toLocaleString();
-  document.getElementById('ov-bank').textContent = '$' + p.bank.toLocaleString();
-  document.getElementById('ov-level').textContent = `LVL ${p.level} · ${p.xp.toLocaleString()} XP`;
-  document.getElementById('sidebar-level').textContent = `LVL ${p.level} · ${p.xp.toLocaleString()} XP`;
+  // Info cards
+  document.getElementById('iv-cash').textContent = p.cash.toLocaleString() + ' Scrip';
+  const heatLabel = getHeatLabel(p.heat);
+  document.getElementById('iv-heat').textContent = `${p.heat} — ${heatLabel}`;
+  document.getElementById('iv-level').textContent = `LVL ${p.level} · ${p.xp.toLocaleString()} XP`;
+  document.getElementById('iv-ideology').textContent = p.ideology ? IDEOLOGIES[p.ideology]?.name || p.ideology : 'Undeclared';
 
-  // Status
+  // Notoriety rank
+  const rank = getNotorietyRank(p.notoriety);
+  document.getElementById('notoriety-rank-block').innerHTML = `
+    <div class="notoriety-rank">
+      <div class="nr-label">${rank.label}</div>
+      <div class="nr-desc">${rank.desc}</div>
+    </div>`;
+
+  // Sidebar
+  document.getElementById('s-level').textContent = `LVL ${p.level} · ${p.xp.toLocaleString()} XP`;
+  document.getElementById('s-rank').textContent = rank.label;
+  document.getElementById('s-heat-label').textContent = `HEAT: ${p.heat} — ${heatLabel}`;
+  document.getElementById('s-heat-bar').style.width = heatPct + '%';
+  document.getElementById('s-heat-bar').style.background = getHeatColor(p.heat);
+
   const now = Math.floor(Date.now() / 1000);
   const inJail = now < p.jail_until;
   const inHospital = now < p.hospital_until;
+  const statusEl = document.getElementById('s-status');
+  if (inJail) statusEl.innerHTML = '<span class="status-dot dot-jail">● DETAINED</span>';
+  else if (inHospital) statusEl.innerHTML = '<span class="status-dot dot-hosp">● INJURED</span>';
+  else statusEl.innerHTML = '<span class="status-dot dot-active">● ACTIVE</span>';
 
-  const pill = document.getElementById('sidebar-status-pill');
+  // Banners
+  const bannersEl = document.getElementById('banners');
+  bannersEl.innerHTML = '';
   if (inJail) {
-    pill.innerHTML = '<span class="status-pill in-jail">● JAILED</span>';
-  } else if (inHospital) {
-    pill.innerHTML = '<span class="status-pill in-hospital">● HOSPITAL</span>';
-  } else {
-    pill.innerHTML = '<span class="status-pill">● ACTIVE</span>';
-  }
-
-  // Status banners on overview
-  const banners = document.getElementById('status-banners');
-  banners.innerHTML = '';
-  if (inJail) {
-    banners.innerHTML += `<div class="status-banner">🔒 You're in JAIL. Time remaining: <span class="timer" id="jail-timer">...</span></div>`;
-    startTimer('jail-timer', p.jail_until - now);
+    bannersEl.innerHTML += `<div class="banner jail">🔒 DETAINED — Time remaining: <span class="timer" id="jail-t">...</span></div>`;
+    startTimer('jail-t', p.jail_until - now);
   }
   if (inHospital) {
-    banners.innerHTML += `<div class="status-banner hospital">🏥 You're in the HOSPITAL. Time remaining: <span class="timer" id="hosp-timer">...</span></div>`;
-    startTimer('hosp-timer', p.hospital_until - now);
+    bannersEl.innerHTML += `<div class="banner hosp">🏥 INJURED — Recovery time: <span class="timer" id="hosp-t">...</span></div>`;
+    startTimer('hosp-t', p.hospital_until - now);
   }
 }
 
 function setBar(name, val, max) {
-  const pct = Math.min(100, Math.max(0, (val / max) * 100));
+  const pct = Math.min(100, Math.max(0, (val/max)*100));
   document.getElementById(`bar-${name}`).style.width = pct + '%';
   document.getElementById(`val-${name}`).textContent = `${val}/${max}`;
 }
 
-// ─── CRIMES ───────────────────────────────────────────────────────────────────
-async function loadCrimes() {
-  const res = await fetch('/api/crimes');
+function getHeatLabel(h) {
+  if (h <= 20) return 'Ghost';
+  if (h <= 40) return 'Noticed';
+  if (h <= 60) return 'Watched';
+  if (h <= 80) return 'Hunted';
+  return 'Priority Target';
+}
+function getHeatColor(h) {
+  if (h <= 20) return '#27c468';
+  if (h <= 40) return '#f39c12';
+  if (h <= 60) return '#e67e22';
+  if (h <= 80) return '#e84545';
+  return '#bf2222';
+}
+
+function getNotorietyRank(n) {
+  const ranks = [
+    { at: 0,   label: 'Unknown',       desc: 'Nobody knows your name. Start making noise.' },
+    { at: 10,  label: 'Rumoured',      desc: 'Your name gets mentioned in certain circles.' },
+    { at: 25,  label: 'Recognised',    desc: 'Chapter 2 unlocked — Infiltration techniques.' },
+    { at: 50,  label: 'Respected',     desc: 'Underground contacts begin approaching you.' },
+    { at: 75,  label: 'Feared',        desc: 'Chapter 3 unlocked — Sabotage operations.' },
+    { at: 100, label: 'Infamous',      desc: 'The state has a file on you. Act accordingly.' },
+    { at: 150, label: 'Legendary',     desc: 'Chapters 4 & 5 unlocked — Chemical / Electronic warfare.' },
+    { at: 300, label: 'The Architect', desc: 'Chapter 6 unlocked. The Manifesto is within reach.' },
+  ];
+  let rank = ranks[0];
+  for (const r of ranks) { if (n >= r.at) rank = r; else break; }
+  return rank;
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+
+async function loadActions() {
+  const res = await fetch('/api/actions');
   const data = await res.json();
   if (data.error) return;
 
+  const statusEl = document.getElementById('action-status');
+  statusEl.innerHTML = '';
+
   const now = Math.floor(Date.now() / 1000);
-  const msg = document.getElementById('crime-status-msg');
-  msg.innerHTML = '';
+  if (data.inJail)     statusEl.innerHTML = '<div class="banner jail">🔒 Detained. You cannot act right now.</div>';
+  if (data.inHospital) statusEl.innerHTML = '<div class="banner hosp">🏥 Injured. Recover before acting.</div>';
 
-  if (data.inJail) {
-    msg.innerHTML = `<div class="status-banner">🔒 You're in JAIL. Can't commit crimes right now.</div>`;
-  } else if (data.inHospital) {
-    msg.innerHTML = `<div class="status-banner hospital">🏥 You're hospitalized. Recover first.</div>`;
-  }
+  // Group by chapter
+  const chapters = {};
+  data.actions.forEach(a => {
+    if (!chapters[a.chapter]) chapters[a.chapter] = { name: a.chapterName, actions: [] };
+    chapters[a.chapter].actions.push(a);
+  });
 
-  const list = document.getElementById('crimes-list');
+  const list = document.getElementById('actions-list');
   list.innerHTML = '';
 
-  const tiers = { 1: [], 2: [], 3: [], 4: [] };
-  data.crimes.forEach(c => tiers[c.tier]?.push(c));
-
-  const tierNames = { 1: 'Tier I — Street Level', 2: 'Tier II — Getting Serious', 3: 'Tier III — Major Operations', 4: 'Tier IV — Endgame' };
-
-  for (const [tier, crimes] of Object.entries(tiers)) {
-    if (!crimes.length) continue;
-    list.innerHTML += `<div class="tier-header">${tierNames[tier]}</div>`;
-    crimes.forEach(crime => {
+  for (const [ch, group] of Object.entries(chapters)) {
+    list.innerHTML += `<div class="chapter-hdr">${group.name}</div>`;
+    list.innerHTML += `<div class="chapter-quote">${CHAPTER_QUOTES[ch] || ''}</div>`;
+    group.actions.forEach(a => {
+      const heatSign = a.heatGain < 0 ? `↓${Math.abs(a.heatGain)}` : `+${a.heatGain}`;
+      const heatStyle = a.heatGain < 0 ? 'color:var(--green2)' : '';
       list.innerHTML += `
-        <div class="crime-row ${crime.locked ? 'locked' : ''}">
+        <div class="action-row ${a.locked?'locked':''} ${a.isEndgame?'endgame':''}">
           <div>
-            <div class="crime-name">${crime.name}</div>
-            <div class="crime-desc">${crime.description}</div>
-            <div class="crime-meta">
-              <span class="nerve-cost">⚡ ${crime.nerve} nerve</span> &nbsp;·&nbsp;
-              <span class="reward">${crime.rewardRange}</span>
-              ${crime.stat ? `&nbsp;·&nbsp; <span style="color:var(--amber)">${crime.stat.toUpperCase()}</span>` : ''}
+            <div class="an">${a.name}</div>
+            <div class="ad">${a.description}</div>
+            <div class="am">
+              <span class="nerve-c">⚡ ${a.nerve} nerve</span>
+              <span class="reward">${a.rewardDesc}</span>
+              <span class="heat-c" style="${heatStyle}">heat ${heatSign}</span>
+              ${a.locked && a.lockReason ? `<span class="lock-r">⛔ ${a.lockReason}</span>` : ''}
             </div>
           </div>
-          <button class="crime-btn" ${crime.locked ? 'disabled' : ''} onclick="commitCrime('${crime.key}')">
-            DO IT
+          <button class="act-btn ${a.isEndgame?'endgame-btn':''}" ${a.locked?'disabled':''} onclick="commitAction('${a.key}')">
+            ${a.isEndgame ? 'PUBLISH' : 'DO IT'}
           </button>
-        </div>
-      `;
+        </div>`;
     });
   }
 }
 
-async function commitCrime(key) {
-  const res = await fetch('/api/crimes/commit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ crimeKey: key })
+async function commitAction(key) {
+  const res = await fetch('/api/actions/commit', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ actionKey: key })
   });
   const data = await res.json();
-  if (data.error) { showToast('error', 'Blocked', data.error, ''); return; }
+  if (data.error) { showToast('error', 'BLOCKED', data.error, '', ''); return; }
 
   const type = data.success ? 'success' : 'fail';
-  const title = data.success ? `✓ ${data.crimeName}` : `✗ ${data.crimeName} — BUSTED`;
+  const title = data.success ? `✓ ${data.actionName}` : `✗ ${data.actionName} — BLOWN`;
   const reward = data.success
-    ? `+$${data.cashGain.toLocaleString()} · +${data.xpGain} XP` + (data.notoriety ? ` · +${data.notoriety} notoriety` : '')
-    : data.jailTime > 0 ? `Jailed for ${formatTime(data.jailTime)}` : '';
+    ? [data.cashGain > 0 ? `+${data.cashGain} Scrip` : '', data.xpGain > 0 ? `+${data.xpGain} XP` : '', data.notorietyGain > 0 ? `+${data.notorietyGain} Notoriety` : ''].filter(Boolean).join(' · ')
+    : data.jailTime > 0 ? `Detained for ${fmtTime(data.jailTime)}` : '';
+  const heatStr = data.heatChange !== 0
+    ? (data.heatChange > 0 ? `Heat +${data.heatChange}` : `Heat ${data.heatChange}`)
+    : '';
 
-  showToast(type, title, data.message, reward);
-
+  showToast(type, title, data.message, reward, heatStr);
   await loadPlayer();
-  loadCrimes();
-  loadActivityLog();
+  loadActions();
+  loadLog();
 }
 
-// ─── TRAINING ─────────────────────────────────────────────────────────────────
+// ─── TRAINING ────────────────────────────────────────────────────────────────
+
 async function loadTraining() {
   const res = await fetch('/api/training');
   const data = await res.json();
   if (data.error) return;
 
-  const grid = document.getElementById('exercise-grid');
-  grid.innerHTML = '';
-
-  data.exercises.forEach(ex => {
-    grid.innerHTML += `
-      <div class="exercise-card">
-        <div class="exercise-name">${ex.name}</div>
-        <div class="exercise-stat">Trains: ${ex.stat.toUpperCase()} (currently ${ex.currentStat})</div>
-        <div class="exercise-cost">Cost: ${ex.energyCost} Energy</div>
-        <button class="exercise-btn" ${ex.canAfford ? '' : 'disabled'} onclick="doTrain('${ex.key}')">
-          TRAIN [ ${ex.energyCost}E ]
-        </button>
-      </div>
-    `;
-  });
+  const grid = document.getElementById('train-grid');
+  grid.innerHTML = data.exercises.map(ex => `
+    <div class="train-card">
+      <div class="tn">${ex.name}</div>
+      <div class="td">${ex.description}</div>
+      <div class="tf">${ex.flavor}</div>
+      <div class="ts">↑ ${ex.stat.toUpperCase()} (currently ${ex.currentStat}) · ${ex.energyCost} Resolve</div>
+      <button class="train-btn" ${ex.canAfford?'':'disabled'} onclick="doTrain('${ex.key}')">
+        TRAIN [ ${ex.energyCost}R ]
+      </button>
+    </div>`).join('');
 }
 
 async function doTrain(key) {
   const res = await fetch('/api/training/train', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ exerciseKey: key })
   });
   const data = await res.json();
-  if (data.error) { showToast('error', 'Blocked', data.error, ''); return; }
+  if (data.error) { showToast('error', 'BLOCKED', data.error, '', ''); return; }
 
-  const type = data.statGain > 0 ? 'success' : 'info';
-  const title = data.statGain > 0 ? `↑ ${data.stat.toUpperCase()} increased!` : 'Session complete';
-  const reward = data.statGain > 0
-    ? `${data.stat.toUpperCase()} → ${data.newStatValue} · +${data.xpGain} XP`
-    : `+${data.xpGain} XP`;
-
-  showToast(type, title, data.message, reward);
-
+  showToast(
+    data.statGain > 0 ? 'success' : 'info',
+    data.statGain > 0 ? `↑ ${data.stat.toUpperCase()} improved` : 'Session complete',
+    data.message,
+    data.statGain > 0 ? `${data.stat.toUpperCase()} → ${data.newStatValue} · +${data.xpGain} XP` : `+${data.xpGain} XP`,
+    ''
+  );
   await loadPlayer();
   loadTraining();
-  loadActivityLog();
+  loadLog();
 }
 
-// ─── ACTIVITY LOG ─────────────────────────────────────────────────────────────
-async function loadActivityLog() {
+// ─── IDEOLOGY ────────────────────────────────────────────────────────────────
+
+function renderIdeology() {
+  const grid = document.getElementById('ideology-grid');
+  const current = player?.ideology;
+
+  grid.innerHTML = Object.entries(IDEOLOGIES).map(([key, ideo]) => `
+    <div class="ideology-card ${current===key?'selected':''}">
+      <div class="ideology-name">${ideo.name}</div>
+      <div class="ideology-quote">${ideo.flavor}</div>
+      <div class="ideology-desc">${ideo.description}</div>
+      <button class="ideology-select-btn ${current===key?'chosen':''}"
+        onclick="${current?'':''}" ${current?'disabled':''}>
+        ${current===key ? '✓ YOUR IDEOLOGY' : current ? 'COMMITTED' : 'CHOOSE THIS PATH'}
+      </button>
+    </div>`).join('');
+  // Note: ideology selection endpoint coming in v0.2
+}
+
+// ─── LOG ─────────────────────────────────────────────────────────────────────
+
+async function loadLog() {
   const res = await fetch('/api/player/log');
   const data = await res.json();
   if (data.error) return;
 
   const feed = document.getElementById('log-feed');
   if (!data.logs.length) {
-    feed.innerHTML = '<div class="log-entry" style="color:var(--text-dim);font-size:11px;">No activity yet...</div>';
+    feed.innerHTML = '<div class="log-entry" style="color:var(--dim);font-size:11px;padding:12px;">No actions logged yet.</div>';
     return;
   }
-
   feed.innerHTML = data.logs.map(log => {
-    const type = log.action.includes('[SUCCESS]') ? 'success' : log.action.includes('[BUSTED]') ? 'fail' : '';
-    const timeAgo = timeSince(log.timestamp);
-    return `
-      <div class="log-entry ${type}">
-        <div class="log-action">${log.action}</div>
-        <div class="log-detail">${log.detail || ''}</div>
-        <div class="log-time">${timeAgo}</div>
-      </div>
-    `;
+    const type = log.action.includes('[SUCCESS]') ? 'suc' : log.action.includes('[BLOWN]') ? 'fail' : '';
+    return `<div class="log-entry ${type}">
+      <div class="la">${log.action}</div>
+      <div class="ld">${log.detail||''}</div>
+      <div class="lt">${timeSince(log.timestamp)}</div>
+    </div>`;
   }).join('');
 }
 
-// ─── TOAST ────────────────────────────────────────────────────────────────────
-let toastTimer;
-function showToast(type, title, msg, reward) {
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+
+let toastTm;
+function showToast(type, title, msg, reward, heat) {
   const el = document.getElementById('toast');
-  el.className = type;
-  document.getElementById('toast-title').textContent = title;
-  document.getElementById('toast-msg').textContent = msg;
-  document.getElementById('toast-reward').textContent = reward;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+  el.className = type === 'success' ? 'show success' : type === 'info' ? 'show info' : 'show';
+  document.getElementById('tt').textContent = title;
+  document.getElementById('tm').textContent = msg;
+  document.getElementById('tr').textContent = reward;
+  document.getElementById('th').textContent = heat;
+  clearTimeout(toastTm);
+  toastTm = setTimeout(() => el.classList.remove('show'), 4500);
 }
 
-// ─── UTILS ────────────────────────────────────────────────────────────────────
-function formatTime(seconds) {
-  if (seconds < 60) return `${seconds}s`;
-  if (seconds < 3600) return `${Math.floor(seconds/60)}m ${seconds%60}s`;
-  return `${Math.floor(seconds/3600)}h ${Math.floor((seconds%3600)/60)}m`;
-}
+// ─── UTILS ───────────────────────────────────────────────────────────────────
 
+function fmtTime(s) {
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s/60)}m ${s%60}s`;
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m`;
+}
 function timeSince(ts) {
-  const diff = Math.floor(Date.now()/1000) - ts;
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
-  return `${Math.floor(diff/86400)}d ago`;
+  const d = Math.floor(Date.now()/1000) - ts;
+  if (d < 60) return 'just now';
+  if (d < 3600) return `${Math.floor(d/60)}m ago`;
+  if (d < 86400) return `${Math.floor(d/3600)}h ago`;
+  return `${Math.floor(d/86400)}d ago`;
 }
-
 function startTimer(id, seconds) {
-  let remaining = seconds;
-  const el = document.getElementById(id);
-  if (!el) return;
-
+  let rem = seconds;
   const tick = () => {
-    if (!document.getElementById(id)) return;
-    if (remaining <= 0) {
-      document.getElementById(id).textContent = '0s';
-      loadPlayer();
-      return;
-    }
-    document.getElementById(id).textContent = formatTime(remaining--);
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (rem <= 0) { el.textContent = '0s'; loadPlayer(); return; }
+    el.textContent = fmtTime(rem--);
     setTimeout(tick, 1000);
   };
   tick();
 }
-
 async function doLogout() {
-  await fetch('/api/auth/logout', { method: 'POST' });
+  await fetch('/api/auth/logout', { method:'POST' });
   window.location.href = '/';
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
-loadPlayer();
-loadActivityLog();
+// ─── INIT ────────────────────────────────────────────────────────────────────
 
-// Poll player data every 60 seconds for regen updates
+loadPlayer();
+loadLog();
 setInterval(loadPlayer, 60000);
-setInterval(loadActivityLog, 30000);
+setInterval(loadLog, 30000);
 </script>
 </body>
 </html>

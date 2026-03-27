@@ -1,10 +1,10 @@
 const express = require('express');
 const { getDb } = require('../db/database');
-const { CRIMES, xpForLevel } = require('../db/gamedata');
+const { ACTIONS, getHeatLevel, getNotorietyRank, xpForLevel } = require('../db/gamedata');
 const { getPlayer } = require('./player');
 const router = express.Router();
 
-// GET /api/crimes — list available crimes
+// GET /api/actions — list available actions by chapter
 router.get('/', (req, res) => {
   if (!req.session.playerId) return res.json({ error: 'Not logged in.' });
   const player = getPlayer(req.session.playerId);
@@ -14,139 +14,143 @@ router.get('/', (req, res) => {
   const inJail = now < player.jail_until;
   const inHospital = now < player.hospital_until;
 
-  const crimes = Object.entries(CRIMES).map(([key, crime]) => {
-    const canAfford = player.nerve >= crime.nerve;
-    const statVal = crime.stat ? player[crime.stat] : 999;
-    const minStatReq = crime.minStat ? Object.entries(crime.minStat) : [];
-    const meetsMinStat = minStatReq.every(([s, v]) => player[s] >= v);
+  const actions = Object.entries(ACTIONS).map(([key, action]) => {
+    const canAffordNerve = player.nerve >= action.nerve;
+    const meetsNotoriety = !action.minNotoriety || player.notoriety >= action.minNotoriety;
+    const meetsMinStat = !action.minStat || Object.entries(action.minStat).every(([s, v]) => player[s] >= v);
+    const locked = !canAffordNerve || !meetsNotoriety || !meetsMinStat || inJail || inHospital;
+
+    let lockReason = null;
+    if (!meetsNotoriety) lockReason = `Requires ${action.minNotoriety} Notoriety`;
+    else if (!meetsMinStat && action.minStat) {
+      const [s, v] = Object.entries(action.minStat)[0];
+      lockReason = `Requires ${v} ${s.toUpperCase()}`;
+    }
+    else if (!canAffordNerve) lockReason = `Need ${action.nerve} Nerve`;
+    else if (inJail) lockReason = 'In jail';
+    else if (inHospital) lockReason = 'In hospital';
 
     return {
       key,
-      name: crime.name,
-      tier: crime.tier,
-      nerve: crime.nerve,
-      description: crime.description,
-      stat: crime.stat,
-      canAfford,
-      meetsMinStat,
-      locked: !canAfford || !meetsMinStat || inJail || inHospital,
-      rewardRange: `$${crime.rewards.cashMin.toLocaleString()} - $${crime.rewards.cashMax.toLocaleString()}`,
+      name: action.name,
+      chapter: action.chapter,
+      chapterName: action.chapterName,
+      nerve: action.nerve,
+      description: action.description,
+      stat: action.stat,
+      heatGain: action.heatGain,
+      rewardDesc: action.rewards.cashMax > 0
+        ? `${action.rewards.cashMin}–${action.rewards.cashMax} Scrip`
+        : action.rewards.notoriety > 0
+          ? `+${action.rewards.notoriety} Notoriety`
+          : 'Non-monetary',
+      locked,
+      lockReason,
+      isEndgame: action.isEndgame || false,
     };
   });
 
-  res.json({ crimes, player: { nerve: player.nerve, nerve_max: player.nerve_max }, inJail, inHospital });
+  res.json({
+    actions,
+    player: {
+      nerve: player.nerve, nerve_max: player.nerve_max,
+      notoriety: player.notoriety, heat: player.heat
+    },
+    inJail, inHospital
+  });
 });
 
-// POST /api/crimes/commit
+// POST /api/actions/commit
 router.post('/commit', (req, res) => {
   if (!req.session.playerId) return res.json({ error: 'Not logged in.' });
-
-  const { crimeKey } = req.body;
-  const crime = CRIMES[crimeKey];
-  if (!crime) return res.json({ error: 'Unknown crime.' });
+  const { actionKey } = req.body;
+  const action = ACTIONS[actionKey];
+  if (!action) return res.json({ error: 'Unknown action.' });
 
   const db = getDb();
   const player = getPlayer(req.session.playerId);
   if (!player) return res.json({ error: 'Player not found.' });
 
   const now = Math.floor(Date.now() / 1000);
-
-  // Status checks
-  if (now < player.jail_until)
-    return res.json({ error: 'You\'re in jail. Post bail or wait it out.' });
-  if (now < player.hospital_until)
-    return res.json({ error: 'You\'re in the hospital. Recover first.' });
-  if (player.nerve < crime.nerve)
-    return res.json({ error: `Need ${crime.nerve} nerve. You have ${player.nerve}.` });
-
-  // Stat requirement check
-  if (crime.minStat) {
-    for (const [stat, val] of Object.entries(crime.minStat)) {
-      if (player[stat] < val) {
-        return res.json({ error: `Requires ${val} ${stat}. You have ${player[stat]}.` });
-      }
+  if (now < player.jail_until) return res.json({ error: 'You\'re detained. Wait it out or pay bail.' });
+  if (now < player.hospital_until) return res.json({ error: 'You\'re in no condition to act. Recover first.' });
+  if (player.nerve < action.nerve) return res.json({ error: `Not enough nerve. Need ${action.nerve}, have ${player.nerve}.` });
+  if (action.minNotoriety && player.notoriety < action.minNotoriety)
+    return res.json({ error: `Requires ${action.minNotoriety} Notoriety. You have ${player.notoriety}.` });
+  if (action.minStat) {
+    for (const [stat, val] of Object.entries(action.minStat)) {
+      if (player[stat] < val) return res.json({ error: `Requires ${val} ${stat}. You have ${player[stat]}.` });
     }
   }
 
-  // Calculate success rate
-  let successRate = crime.baseSuccessRate;
-  if (crime.stat && player[crime.stat]) {
-    // Stat above 10 gives slight bonus, below 5 gives penalty
-    const statMod = (player[crime.stat] - 5) * 0.015;
-    successRate = Math.max(0.10, Math.min(0.97, successRate + statMod));
+  // Base success rate modified by stat and heat
+  let successRate = action.baseSuccessRate;
+  if (action.stat && player[action.stat]) {
+    successRate = Math.max(0.1, Math.min(0.97, successRate + (player[action.stat] - 5) * 0.015));
   }
 
-  // Check for items that boost success
+  // Heat penalty on success rate
+  const heatPenalty = player.heat > 20 ? (player.heat - 20) * 0.005 : 0;
+  successRate = Math.max(0.10, successRate - heatPenalty);
+
+  // Scanner bonus
   const items = db.prepare('SELECT item_key FROM items WHERE player_id = ?').all(player.id);
-  const hasScanner = items.some(i => i.item_key === 'police_scanner');
-  if (hasScanner) successRate = Math.min(0.97, successRate + 0.12);
+  if (items.some(i => i.item_key === 'scanner')) successRate = Math.min(0.97, successRate + 0.10);
 
   // Deduct nerve
-  db.prepare('UPDATE players SET nerve = nerve - ? WHERE id = ?').run(crime.nerve, player.id);
+  db.prepare('UPDATE players SET nerve = nerve - ? WHERE id = ?').run(action.nerve, player.id);
 
   const success = Math.random() < successRate;
+  let cashGain = 0, jailTime = 0, xpGain = 0, heatChange = 0;
+  let notorietyGain = 0;
 
-  let cashGain = 0, jailTime = 0, notoriety = 0, xpGain = 0;
-  let message = '';
+  // Heat always increases on action (less on success)
+  heatChange = success ? Math.floor(action.heatGain * 0.6) : action.heatGain;
+
+  // ghost_protocol special case
+  if (actionKey === 'ghost_protocol' && success) {
+    heatChange = -30;
+  }
+
+  const msgs = success ? action.outcomes.success : action.outcomes.fail;
+  let message = msgs[Math.floor(Math.random() * msgs.length)];
 
   if (success) {
-    cashGain = Math.floor(
-      crime.rewards.cashMin + Math.random() * (crime.rewards.cashMax - crime.rewards.cashMin)
-    );
-    xpGain = crime.rewards.xp + Math.floor(Math.random() * crime.rewards.xp * 0.3);
-    notoriety = crime.rewards.notoriety || 0;
-    const msgs = crime.outcomes.success;
-    message = msgs[Math.floor(Math.random() * msgs.length)].replace('{{cash}}', cashGain.toLocaleString());
+    cashGain = action.rewards.cashMin + Math.floor(Math.random() * (action.rewards.cashMax - action.rewards.cashMin + 1));
+    xpGain = action.rewards.xp + Math.floor(Math.random() * action.rewards.xp * 0.3);
+    notorietyGain = action.rewards.notoriety || 0;
 
-    // Apply rewards
     const newXp = player.xp + xpGain;
     const newLevel = calcLevel(newXp);
+    const newHeat = Math.max(0, Math.min(100, player.heat + heatChange));
+
     db.prepare(`
       UPDATE players SET
-        cash = cash + ?,
-        xp = ?,
-        level = ?,
+        cash = cash + ?, xp = ?, level = ?,
         notoriety = notoriety + ?,
+        heat = ?,
         last_action = strftime('%s','now')
       WHERE id = ?
-    `).run(cashGain, newXp, newLevel, notoriety, player.id);
-
+    `).run(cashGain, newXp, newLevel, notorietyGain, newHeat, player.id);
   } else {
-    jailTime = crime.jailTime;
-    const msgs = crime.outcomes.fail;
-    message = msgs[Math.floor(Math.random() * msgs.length)];
-
+    jailTime = action.jailTime;
+    const newHeat = Math.min(100, player.heat + heatChange);
     if (jailTime > 0) {
       db.prepare(`
-        UPDATE players SET
-          jail_until = strftime('%s','now') + ?,
-          last_action = strftime('%s','now')
-        WHERE id = ?
-      `).run(jailTime, player.id);
+        UPDATE players SET jail_until = strftime('%s','now') + ?, heat = ?, last_action = strftime('%s','now') WHERE id = ?
+      `).run(jailTime, newHeat, player.id);
+    } else {
+      db.prepare('UPDATE players SET heat = ?, last_action = strftime('%s','now') WHERE id = ?').run(newHeat, player.id);
     }
   }
 
-  // Log crime
-  db.prepare(`
-    INSERT INTO crimes (player_id, crime_key, outcome, cash_change, xp_gained, jail_time)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `).run(player.id, crimeKey, success ? 'success' : 'fail', cashGain, xpGain, jailTime);
+  db.prepare(`INSERT INTO actions_log (player_id, action_key, outcome, cash_change, xp_gained, heat_change, jail_time)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`).run(player.id, actionKey, success ? 'success' : 'fail', cashGain, xpGain, heatChange, jailTime);
 
-  db.prepare(`
-    INSERT INTO activity_log (player_id, action, detail)
-    VALUES (?, ?, ?)
-  `).run(player.id, success ? `Crime: ${crime.name} [SUCCESS]` : `Crime: ${crime.name} [BUSTED]`, message);
+  db.prepare(`INSERT INTO activity_log (player_id, action, detail) VALUES (?, ?, ?)`)
+    .run(player.id, success ? `${action.name} [SUCCESS]` : `${action.name} [BLOWN]`, message);
 
-  res.json({
-    success,
-    message,
-    cashGain,
-    xpGain,
-    jailTime,
-    notoriety,
-    crimeKey,
-    crimeName: crime.name,
-  });
+  res.json({ success, message, cashGain, xpGain, jailTime, notorietyGain, heatChange, actionKey, actionName: action.name });
 });
 
 function calcLevel(xp) {
